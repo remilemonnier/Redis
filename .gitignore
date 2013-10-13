@@ -1,0 +1,10 @@
+.tm_properties
+.idea
+.DS_Store
+._*
+.Spotlight-V100
+.Trashes
+deps.lock
+composer.phar
+.project
+/vendor/*
