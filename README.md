@@ -1,5 +1,7 @@
 # component used to access Redis
 
+*WIP - do not use*
+
 ## install
 
 ```shell
