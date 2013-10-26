@@ -69,6 +69,8 @@ Access to the predis object simply calling the predis methods.
 
 ## test
 
+require redis installed on localhost
+
 ```shell
 ./vendor/bin/atoum -d tests
 ```
