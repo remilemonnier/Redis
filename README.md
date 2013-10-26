@@ -70,7 +70,7 @@ Access to the predis object simply calling the predis methods.
 ## test
 
 ```shell
-$ ./vendor/bin/atoum -d tests
+./vendor/bin/atoum -d tests
 ```
 
 Unfortunatly you need redis setuped on localhost for all the tests working.
