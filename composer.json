@@ -1,7 +1,9 @@
 {
     "name": "m6web/redis-component",
     "description" : "lib allowing you using redis through predis",
+    "keywords": ["redis"],
     "type": "library",
+    "license": "MIT",
     "authors": [
         {
             "name": "Olivier Mansour",
