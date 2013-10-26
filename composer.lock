@@ -3,20 +3,20 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "862dcbaff33c1213a8c94def4835c29c",
+    "hash": "8af3c06129106450e88d68eb91a1742b",
     "packages": [
         {
             "name": "predis/predis",
-            "version": "v0.8.3",
+            "version": "v0.8.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nrk/predis.git",
-                "reference": "v0.8.3"
+                "reference": "cb18d67b6ab6b8e567c1ab50fe999d1d624f9884"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nrk/predis/zipball/v0.8.3",
-                "reference": "v0.8.3",
+                "url": "https://api.github.com/repos/nrk/predis/zipball/cb18d67b6ab6b8e567c1ab50fe999d1d624f9884",
+                "reference": "cb18d67b6ab6b8e567c1ab50fe999d1d624f9884",
                 "shasum": ""
             },
             "require": {
@@ -50,7 +50,7 @@
                 "predis",
                 "redis"
             ],
-            "time": "2013-02-18 14:03:45"
+            "time": "2013-07-27 09:13:54"
         }
     ],
     "packages-dev": [
