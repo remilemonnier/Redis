@@ -2,7 +2,7 @@
 /**
  * @author o_mansour
  */
-namespace M6\Component\Redis;
+namespace M6Web\Component\Redis;
 include_once __DIR__.'/../../../../vendor/autoload.php';
 
 /**

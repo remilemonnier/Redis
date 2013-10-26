@@ -2,7 +2,7 @@
 /**
  * @author o_mansour
  */
-namespace M6\Component\Redis;
+namespace M6Web\Component\Redis;
 /**
  * simple surcharge de l'exception de php
  */

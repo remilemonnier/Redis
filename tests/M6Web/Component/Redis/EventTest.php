@@ -3,7 +3,7 @@
  * classe utilisée pour les tests
  */
 
-namespace M6\Component\Redis\tests\fake;
+namespace M6Web\Component\Redis\tests\fake;
 
 class EventTest
 {

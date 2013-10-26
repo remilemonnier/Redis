@@ -3,7 +3,7 @@
  *
  */
 
-namespace M6\Component\Redis\tests\units;
+namespace M6Web\Component\Redis\tests\units;
 
 include_once __DIR__.'/../../../../vendor/autoload.php';
 
@@ -11,7 +11,7 @@ require_once __DIR__.'/DispatcherTest.php';
 require_once __DIR__.'/EventTest.php';
 
 use \mageekguy\atoum;
-use \M6\Component\Redis;
+use \M6Web\Component\Redis;
 
 /**
  * @maxChildrenNumber 1
@@ -55,7 +55,7 @@ class DB extends atoum\test
                         'server_config' => $server_config
                     ));
             })
-            ->isInstanceOf('\M6\Component\Redis\Exception');
+            ->isInstanceOf('\M6Web\Component\Redis\Exception');
         $server_config = $this->getServerConfig('one');
         $this->assert
             ->exception(
@@ -66,7 +66,7 @@ class DB extends atoum\test
                         'server_config' => $server_config
                     ));
             })
-            ->isInstanceOf('\M6\Component\Redis\Exception');
+            ->isInstanceOf('\M6Web\Component\Redis\Exception');
         $this->assert
             ->exception(
                 function() use ($server_config) {
@@ -76,7 +76,7 @@ class DB extends atoum\test
                         'server_config' => $server_config
                     ));
             })
-            ->isInstanceOf('\M6\Component\Redis\Exception');
+            ->isInstanceOf('\M6Web\Component\Redis\Exception');
     }
 
     /**
@@ -95,7 +95,7 @@ class DB extends atoum\test
                 function() use ($redis) {
                     $redis->raouldemethode('foo');
                 })
-            ->isInstanceOf('\M6\Component\Redis\Exception');
+            ->isInstanceOf('\M6Web\Component\Redis\Exception');
         $this->assert
             ->boolean($redis->set('raoul', 'v'))
             ->isEqualTo(true);
@@ -114,16 +114,16 @@ class DB extends atoum\test
                 function() use ($redis) {
                     $redis->setCurrentDb('foo');
                 })
-            ->isInstanceOf('\M6\Component\Redis\Exception');
+            ->isInstanceOf('\M6Web\Component\Redis\Exception');
         $this->assert
             ->exception(
                 function() use ($redis) {
-                    $redis->setCurrentDb(\M6\component\Redis\Cache::CACHE);
+                    $redis->setCurrentDb(\M6Web\component\Redis\Cache::CACHE);
                 })
-            ->isInstanceOf('\M6\Component\Redis\Exception');
+            ->isInstanceOf('\M6Web\Component\Redis\Exception');
         $this->assert
             ->object($redis->setCurrentDb(1))
-            ->isInstanceOf('\M6\component\Redis\DB');
+            ->isInstanceOf('\M6Web\component\Redis\DB');
     }
 
     public function testVariousMethod()
@@ -211,9 +211,9 @@ class DB extends atoum\test
             'timeout' => 0.1,
             'server_config' => $server_config
             ));
-        $dispatcher = new \mock\M6\Component\Redis\tests\fake\DispatcherTest();
+        $dispatcher = new \mock\M6Web\Component\Redis\tests\fake\DispatcherTest();
         $dispatcher->getMockController()->dispatch = function() { return true; };
-        $this->if($r->setEventDispatcher($dispatcher, '\M6\Component\Redis\tests\fake\EventTest'))
+        $this->if($r->setEventDispatcher($dispatcher, '\M6Web\Component\Redis\tests\fake\EventTest'))
         ->then
         ->variable($r->get('raoul'))
         ->mock($dispatcher)

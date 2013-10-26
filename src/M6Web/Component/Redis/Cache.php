@@ -7,7 +7,7 @@
  *
  * @author Olivier Mansour
  */
-namespace M6\Component\Redis;
+namespace M6Web\Component\Redis;
 
 
 /**
