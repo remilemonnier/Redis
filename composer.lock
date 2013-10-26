@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "2c96d2e2d4bef5a39fecd21a18d4f308",
+    "hash": "862dcbaff33c1213a8c94def4835c29c",
     "packages": [
         {
             "name": "predis/predis",
@@ -60,12 +60,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/atoum/atoum.git",
-                "reference": "964d70e200d9d261bfbb027c67002a93dc07b74c"
+                "reference": "ab221f3dfbca93ff5a88f45070d8743db419d546"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/atoum/atoum/zipball/964d70e200d9d261bfbb027c67002a93dc07b74c",
-                "reference": "964d70e200d9d261bfbb027c67002a93dc07b74c",
+                "url": "https://api.github.com/repos/atoum/atoum/zipball/ab221f3dfbca93ff5a88f45070d8743db419d546",
+                "reference": "ab221f3dfbca93ff5a88f45070d8743db419d546",
                 "shasum": ""
             },
             "require": {
@@ -126,7 +126,7 @@
                 "test",
                 "unit testing"
             ],
-            "time": "2013-07-18 14:59:47"
+            "time": "2013-10-24 11:42:42"
         }
     ],
     "aliases": [

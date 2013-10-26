@@ -1,6 +1,6 @@
 {
-    "name": "m6/redis-component",
-    "description" : "composant permettant d'utiliser Redis",
+    "name": "m6web/redis-component",
+    "description" : "lib allowing you using redis through predis",
     "type": "library",
     "authors": [
         {
@@ -11,7 +11,7 @@
     "config": {
         "vendor-dir": "vendor"
     },
-    "require": {    
+    "require": {
         "php": ">=5.4.0",
         "predis/predis": "0.8.3"
     },
@@ -19,6 +19,6 @@
         "atoum/atoum": "master-dev"
     },
 	"autoload": {
-        "psr-0": { "M6\\Component\\Redis": "src/" }
+        "psr-0": { "M6Web\\Component\\Redis": "src/" }
     }
 }
