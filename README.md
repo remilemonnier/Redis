@@ -10,7 +10,7 @@ $ php composer.phar install
 
 ## feature
 
-Throught event on each redis command when an eventDispatcher is setted.
+Fire event on each redis command when an eventDispatcher is setted.
 
 ```
 $this->setEventDispatcher($eventDispatcher, $eventClass);
@@ -22,38 +22,38 @@ $this->setEventDispatcher($eventDispatcher, $eventClass);
 M6\Component\Redis\Cache
 ```
 
-Set redis command to different server with a simple consistent hashing algorithm.
+Send redis command to different server with a simple consistent hashing algorithm. Ignore server not responding.
 
 ```
-    $server_config = array(
-                'php50' => array (
-                    'ip' => '127.0.0.1',
-                    'port' => 6379,
-                    ),
-        'phpraoul' => array (  // bad server
-            'ip' => '1.2.3.4',
-            'port' => 6379,
-            ),
-        'php51' => array (
+$server_config = array(
+        'php50' => array (
             'ip' => '127.0.0.1',
             'port' => 6379,
-            )
-        );
-        $redis = new redis\Cache(array(
-            'timeout' => self::TIMEOUT,
-            'server_config' => $server_config,
-            'namespace' => self::SPACENAME
             ),
-        $redis->set('foo', 'bar');
-        $foo = $redis->get('foo');
-        if ($redis->exists('raoul')) die('ho mon dieu il existe vraiment !');
-        $redis->multi()->set('foo', 'bar2');
-        $redis->watch('raoul');
-        $raoul = UnClasse::WorkHard();
-        $redis->set('raoul', $raoul); // wont do anything if the raoul key is modified
-        $redis->exec(); // execute all sets since the multi instructions
-        $redis->incr('compteur');
-        $redis-decr('compteur');
+'phpraoul' => array (  // bad server
+    'ip' => '1.2.3.4',
+    'port' => 6379,
+    ),
+'php51' => array (
+    'ip' => '127.0.0.1',
+    'port' => 6379,
+    )
+);
+$redis = new redis\Cache(array(
+    'timeout' => self::TIMEOUT,
+    'server_config' => $server_config,
+    'namespace' => self::SPACENAME
+    ),
+$redis->set('foo', 'bar');
+$foo = $redis->get('foo');
+if ($redis->exists('raoul')) die('ho mon dieu il existe vraiment !');
+$redis->multi()->set('foo', 'bar2');
+$redis->watch('raoul');
+$raoul = UnClasse::WorkHard();
+$redis->set('raoul', $raoul); // wont do anything if the raoul key is modified
+$redis->exec(); // execute all sets since the multi instructions
+$redis->incr('compteur');
+$redis-decr('compteur');
 ```
 
 Check unit test for more informations.
@@ -66,9 +66,8 @@ M6\Component\Redis\DB
 
 Access to the predis object simply calling the predis methods.
 
-## test
+## tests
 
-require redis installed on localhost
 
 ```shell
 ./vendor/bin/atoum -d tests
