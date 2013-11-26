@@ -8,3 +8,4 @@ deps.lock
 composer.phar
 .project
 /vendor/*
+composer.lock
