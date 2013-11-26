@@ -19,7 +19,7 @@ $this->setEventDispatcher($eventDispatcher, $eventClass);
 ### cache mode
 
 ```php
-M6\Component\Redis\Cache
+M6Web\Component\Redis\Cache
 ```
 
 Send redis command to different server with a simple consistent hashing algorithm. Ignore server not responding.
@@ -61,7 +61,7 @@ Check unit test for more informations.
 ### db mode
 
 ```php
-M6\Component\Redis\DB
+M6Web\Component\Redis\DB
 ```
 
 Access to the predis object simply calling the predis methods.
