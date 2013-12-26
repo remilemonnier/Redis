@@ -12,7 +12,7 @@ use \mageekguy\atoum;
 use \M6Web\Component\Redis;
 
 /**
- * maxChildrenNumber 1
+ * test class
  */
 class Cache extends atoum\test
 {
@@ -82,6 +82,24 @@ class Cache extends atoum\test
             ->string($redis->MyGetServerId('foo'))
             ->isEqualTo('php51'); // we have correctly switched on php51
     }
+
+
+    public function testSimpleGet()
+    {
+        $server_config = $this->getServerConfig('one');
+        $redis = new Redis\Cache(array(
+            'timeout' => self::TIMEOUT,
+            'server_config' => $server_config,
+            'namespace' => self::SPACENAME
+            ),
+             true
+        );
+
+        $this->assert
+            ->boolean($redis->get(__METHOD__."rrrrr"))
+            ->isEqualTo(false);
+    }
+
 
     public function manySetGetDataProvider()
     {
