@@ -19,7 +19,7 @@ class Cache extends atoum\test
 
     const SPACENAME = 'testCacheCache';
 
-    const TIMEOUT = 10.0;
+    const TIMEOUT = 1.0;
 
     private function getServerConfig($config)
     {
@@ -573,7 +573,12 @@ class Cache extends atoum\test
         $this
             ->assert
             ->string($redis->type('foo'))
-            ->isEqualTo('string');
+            ->isEqualTo('string')
+            ->string($redis->type('raouroauroauroauroa'))
+            ->isEqualTo('none');
+
+        $redis->set('foo', 42, 10);
+
     }
 
     /**

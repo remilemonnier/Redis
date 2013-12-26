@@ -203,7 +203,7 @@ class Cache extends Manager
      *
      * @param string $key clé
      *
-     * @return boolean
+     * @return mixed
      */
     public function type($key)
     {
