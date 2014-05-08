@@ -87,11 +87,10 @@ abstract class Manager
      *       'port' => 6379,
      *       ));
      *
-     * @param array $params      Manager params
-     * @param bool  $purgeStatic do we have to purge the static array containing the configuration ?
+     * @param array $params Manager params
+     * @param bool $purgeStatic do we have to purge the static array containing the configuration ?
      *
-     * @return void
-     *
+     * @return \M6Web\Component\Redis\Manager
      */
     public function __construct($params, $purgeStatic = false)
     {
@@ -109,7 +108,7 @@ abstract class Manager
      * @param array  $arguments args of the command
      * @param int    $time      exec time
      *
-     * @return void
+     * @return \M6Web\Component\Redis\Manager
      */
     public function notifyEvent($command, $arguments, $time = 0)
     {
@@ -121,15 +120,17 @@ abstract class Manager
             $event->setArguments($arguments);
             $this->eventDispatcher->dispatch('redis.command', $event);
         }
+
+        return $this;
     }
 
     /**
      * Set an event dispatcher to notify redis command
      * @param Object $eventDispatcher The eventDispatcher object, which implement the notify method
-     * @param string $eventClass      The event class used to create an event and send it to the event dispatcher
+     * @param string $eventClass The event class used to create an event and send it to the event dispatcher
      *
-     * @return void
-     *
+     * @throws Exception
+     * @return \M6Web\Component\Redis\Manager
      */
     public function setEventDispatcher($eventDispatcher, $eventClass)
     {
@@ -142,13 +143,16 @@ abstract class Manager
         }
         $this->eventDispatcher = $eventDispatcher;
         $this->eventClass      = $eventClass;
+
+        return $this;
     }
 
     /**
      * init for the class
      * @param array $params confg array
      *
-     * @return void
+     * @throws Exception
+     * @return \M6Web\Component\Redis\Manager
      * @throw Exception
      */
     protected function init($params)
@@ -165,6 +169,8 @@ abstract class Manager
         if (isset($params['compress']) and is_bool($params['compress'])) {
             $this->compress = $params['compress'];
         }
+
+        return $this;
     }
 
     /**
@@ -227,7 +233,9 @@ abstract class Manager
     /**
      * set the server config
      * @param array $servers config
-     * @param bool  $check   do I have to check the config
+     * @param bool $check do I have to check the config
+     * @throws Exception
+     * @return \M6Web\Component\Redis\Manager
      */
     protected function setServerConfig($servers, $check = true)
     {
@@ -235,6 +243,8 @@ abstract class Manager
             throw new Exception("Le parametre serverConfig est mal formé");
         }
         $this->serverConfig = $servers;
+
+        return $this;
     }
 
      /**
@@ -255,7 +265,8 @@ abstract class Manager
      * return a Redis object according to the key
      * @param string $key cache key
      *
-     * @return Redis or false
+     * @throws Exception
+     * @return Redis
      */
     protected function getRedis($key)
     {
@@ -303,6 +314,7 @@ abstract class Manager
     /**
      * return a Predis object
      *
+     * @throws Exception
      * @return \Predis\Client
      */
     protected function getNewRedis()
@@ -316,8 +328,8 @@ abstract class Manager
 
     /**
      * connecte un server
-     * @param object $redis  \Predis\Client
-     * @param array  $server array('ip' => , 'port' => , 'timeout' =>)
+     * @param object|\Predis\Client $redis \Predis\Client
+     * @param array $server array('ip' => , 'port' => , 'timeout' =>)
      *
      * @return boolean
      */

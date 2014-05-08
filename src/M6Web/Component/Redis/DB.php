@@ -6,7 +6,7 @@
 namespace M6Web\Component\Redis;
 
 /**
- * classe implémentant Rédis comme un DB
+ * class for using Rédis as a DB
  */
 class DB extends Manager
 {
@@ -14,8 +14,9 @@ class DB extends Manager
 
     /**
      * constructor - db is hardcoded
-     * @param array $params      Manager parameters
-     * @param bool  $purgeStatic do we have to purge the static server list ?
+     * @param array $params Manager parameters
+     * @param bool $purgeStatic do we have to purge the static server list ?
+     * @throws Exception
      */
     public function __construct($params, $purgeStatic = false)
     {
@@ -35,9 +36,9 @@ class DB extends Manager
     }
 
     /**
-     * @deprecated
      * @param integer $v
      *
+     * @throws Exception
      * @return object DB
      */
     public function setCurrentDb($v)
@@ -57,6 +58,7 @@ class DB extends Manager
      * return a predis object
      * @param integer $serverRank server rank
      *
+     * @throws Exception
      * @return \Redis
      */
     public function getRedisObject($serverRank = 0)
@@ -74,9 +76,10 @@ class DB extends Manager
     /**
      *  magic method to the \Redis() proxy
      *
-     * @param string $name      method name
-     * @param array  $arguments method arguments
+     * @param string $name method name
+     * @param array $arguments method arguments
      *
+     * @throws Exception
      * @return mixed
      */
     public function __call($name, $arguments)
