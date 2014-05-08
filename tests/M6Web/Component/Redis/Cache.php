@@ -350,6 +350,21 @@ class Cache extends atoum\test
             ->isEqualTo(false);
     }
 
+    public function testExpireFunction()
+    {
+        $server_config = $this->getServerConfig('one');
+        $redis = new Redis\CacheTest(array(
+            'timeout' => self::TIMEOUT,
+            'server_config' => $server_config,
+            'namespace' => self::SPACENAME.__METHOD__
+        ));
+
+        $this->assert
+            ->exception(function () use ($redis) {
+                $redis->expire('raoul', -2);
+            });
+    }
+
     /**
      * @tags watch
      * [watch description]

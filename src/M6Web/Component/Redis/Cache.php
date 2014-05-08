@@ -39,8 +39,9 @@ class Cache extends Manager
 
     /**
      * class constructor
-     * @param array $params      Manager parameters
-     * @param bool  $purgeStatic do we have to purge the static server list ?
+     * @param array $params Manager parameters
+     * @param bool $purgeStatic do we have to purge the static server list ?
+     * @throws Exception
      */
     public function __construct($params, $purgeStatic = false)
     {
@@ -268,15 +269,16 @@ class Cache extends Manager
     /**
      * set the key ttl
      *
-     * @param string  $key la clé
+     * @param string $key la clé
      * @param integer $ttl ttl en seconde
      *
+     * @throws Exception
      * @return int
      */
     public function expire($key, $ttl)
     {
         if ($ttl <= 0) {
-            return;
+            throw new Exception('ttl arg cant be negative');
         }
 
         $keyP = $this->getPatternKey().$key;
@@ -355,7 +357,7 @@ class Cache extends Manager
     /**
      * unwatch (flush all params watched)
      *
-     * @return void
+     * @return string
      */
     public function unwatch()
     {
@@ -546,7 +548,9 @@ class Cache extends Manager
     /**
      * method not allowed in cache mode
      *
+     * @deprecated
      * @param string $v de toute façon j'm'en fiche
+     * @throws Exception
      */
     public function setCurrentDb($v)
     {
@@ -556,8 +560,8 @@ class Cache extends Manager
     /**
      * add a task to the execution list
      *
-     * @param string  $key  clé
-     * @param closure $func closure à ajouter
+     * @param string $key clé
+     * @param callable $func closure à ajouter
      *
      * @return void
      */
