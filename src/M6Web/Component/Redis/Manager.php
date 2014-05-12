@@ -25,7 +25,7 @@ abstract class Manager
      * array of server configuration
      * @var array
      */
-    protected $serverConfig = array();
+    protected $serverConfig = null;
 
     /**
      * array of Redis object
@@ -53,7 +53,8 @@ abstract class Manager
 
     /**
      * get the current db
-     * @return string / int WTF !!!!!
+     * @throws Exception
+     * @return string|int
      */
     public function getCurrentDb()
     {
@@ -242,7 +243,29 @@ abstract class Manager
         if ($check and (!self::checkServerConfig($servers))) {
             throw new Exception("Le parametre serverConfig est mal formé");
         }
-        $this->serverConfig = $servers;
+        // allow set only if the class var is null (one init only)
+        if (is_null($this->serverConfig)) {
+            $this->serverConfig = $servers;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param $servers
+     * @throws Exception
+     * @return $this
+     */
+    protected function setInitServerConfig($servers)
+    {
+        if (!self::checkServerConfig($servers)) {
+            throw new Exception("Le parametre serverConfig est mal formé");
+        }
+
+        // allow set only if the class var is null (one init only)
+        if (is_null($this->serverInitConfig)) {
+            $this->serverInitConfig = $servers;
+        }
 
         return $this;
     }
@@ -253,10 +276,12 @@ abstract class Manager
      *
      * @return string
      */
-    protected function getServerId($key)
+    protected function getServerId($key, $servers = null)
     {
-        $server = $this->getServerConfig();
-        $serverKeys = array_keys($server); // todo, set a cache ?
+        if (is_null($servers)) {
+            $servers = $this->getServerConfig();
+        }
+        $serverKeys = array_keys($servers);
 
         return $serverKeys[(int) (crc32($key) % count($serverKeys))];
     }
@@ -265,23 +290,26 @@ abstract class Manager
      * return a Redis object according to the key
      * @param string $key cache key
      *
+     * @param null $servers
      * @throws Exception
      * @return Redis
      */
-    protected function getRedis($key)
+    protected function getRedis($key, $servers = null)
     {
-        $idServer = $this->getServerId($key);
-        $servers = $this->getServerConfig(); // all the servers
-        unset($servers[$idServer]); // supress the server that will be tested from the pile
+        if (is_null($servers)) {
+            $servers = $this->getServerConfig(); // all the servers
+        }
+        if (0 == count($servers)) {
+            throw new Exception("No redis server available ! ");
+        }
+        $idServer = $this->getServerId($key, $servers);
+
         if (!($redis = $this->getRedisFromServerConfig($idServer))) {
             $this->notifyEvent('redis_host_on_error', array($idServer));
-            if (count($servers) == 0) {
-                throw new Exception("No redis server available ! ");
-            }
             // find another server !!!
-            $this->setServerConfig($servers, false); // reinit the object without the not responding server
+            unset($servers[$idServer]); // supress the server
 
-            return $this->getRedis($key); // RECURSION ^^
+            return $this->getRedis($key, $servers); // RECURSION ^^
         }
         $redis->select($this->getCurrentDb());
 
@@ -297,11 +325,15 @@ abstract class Manager
     public function getRedisFromServerConfig($idServer)
     {
         if (array_key_exists($idServer, self::$redisArray)) {
+            if (!self::$redisArray[$idServer]->isConnected()) {
+                return false;
+            }
+
             return self::$redisArray[$idServer];
         }
 
         $redis = $this->getNewRedis();
-        if (!is_null($redis) and ($this->connectServer($redis, $this->getServerConfig($idServer)))) {
+        if ($this->connectServer($redis, $this->getServerConfig($idServer))) {
             // peuple le tableau statique
             self::$redisArray[$idServer] = $redis;
 
