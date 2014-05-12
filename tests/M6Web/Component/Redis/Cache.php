@@ -19,7 +19,7 @@ class Cache extends atoum\test
 
     const SPACENAME = 'testCacheCache';
 
-    const TIMEOUT = 1.0;
+    const TIMEOUT = 0.2;
 
     private function getServerConfig($config)
     {
@@ -76,8 +76,6 @@ class Cache extends atoum\test
         $this->assert
             ->string($redis->MyGetServerId('raoul'))
             ->isEqualTo('php50');
-        $this->assert
-            ->object($redis->set('foo', 'chuck'));
         $this->assert
             ->string($redis->MyGetServerId('foo'))
             ->isEqualTo('php51'); // we have correctly switched on php51
