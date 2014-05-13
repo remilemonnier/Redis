@@ -66,7 +66,6 @@ class Cache extends atoum\test
      */
     public function testGetServerId()
     {
-        $redis =
         $server_config = $this->getServerConfig('many');
         $redis = new Redis\CacheTest(array(
             'timeout' => self::TIMEOUT,
@@ -79,6 +78,9 @@ class Cache extends atoum\test
         $this->assert
             ->string($redis->MyGetServerId('foo'))
             ->isEqualTo('php51'); // we have correctly switched on php51
+        $this->assert
+            ->string($redis->MyGetServerId('bar2'))
+            ->isEqualTo('phpraoul');
     }
 
 
