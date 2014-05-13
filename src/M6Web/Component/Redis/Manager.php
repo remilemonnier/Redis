@@ -31,7 +31,13 @@ abstract class Manager
      * array of Redis object
      * @var array
      */
-    protected static $redisArray = array();
+    protected $aliveRedis = array();
+
+    /**
+     * array of Redis object
+     * @var array
+     */
+    protected $deadRedis = array();
 
     /**
      * db (as redis understand it)
@@ -96,7 +102,7 @@ abstract class Manager
     public function __construct($params, $purgeStatic = false)
     {
         if ($purgeStatic === true) {
-            self::$redisArray = array();
+            $this->aliveRedis = array();
         }
         $this->init($params);
 
@@ -307,21 +313,29 @@ abstract class Manager
      */
     public function getRedisFromServerConfig($idServer)
     {
-        if (array_key_exists($idServer, self::$redisArray)) {
-            if (!self::$redisArray[$idServer]->isConnected()) {
+        // redis already marked dead
+        if (array_key_exists($idServer, $this->deadRedis)) {
+            return false;
+        }
+        // redis already marked alive
+        if (array_key_exists($idServer, $this->aliveRedis)) {
+            if (!$this->aliveRedis[$idServer]->isConnected()) {
+                $this->deadRedis[$idServer] = 1;
+
                 return false;
             }
 
-            return self::$redisArray[$idServer];
+            return $this->aliveRedis[$idServer];
         }
 
         $redis = $this->getNewRedis();
         if ($this->connectServer($redis, $this->getServerConfig($idServer))) {
-            // peuple le tableau statique
-            self::$redisArray[$idServer] = $redis;
+            $this->aliveRedis[$idServer] = $redis;
 
             return $redis;
         } else {
+            $this->deadRedis[$idServer] = 1;
+
             return false;
         }
     }
