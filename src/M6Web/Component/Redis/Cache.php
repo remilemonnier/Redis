@@ -39,8 +39,9 @@ class Cache extends Manager
 
     /**
      * class constructor
-     * @param array $params Manager parameters
-     * @param bool $purgeStatic do we have to purge the static server list ?
+     * @param array $params      Manager parameters
+     * @param bool  $purgeStatic do we have to purge the static server list ?
+     *
      * @throws Exception
      */
     public function __construct($params, $purgeStatic = false)
@@ -236,7 +237,8 @@ class Cache extends Manager
      * @param string  $key  la clé
      * @param integer $incr valeur
      *
-     * @return value afeter increment
+     * @throws Exception
+     * @return int
      */
     public function incr($key, $incr = 1)
     {
@@ -269,7 +271,7 @@ class Cache extends Manager
     /**
      * set the key ttl
      *
-     * @param string $key la clé
+     * @param string  $key la clé
      * @param integer $ttl ttl en seconde
      *
      * @throws Exception
@@ -323,7 +325,6 @@ class Cache extends Manager
      */
     public function flush()
     {
-        $deleted = 0;
         $pattern = $this->getPatternKey();
         $arrReturn = $this->runOnAllRedisServer(
             function ($redis) use ($pattern) {
@@ -387,6 +388,7 @@ class Cache extends Manager
     /**
      * execute multiple commands
      *
+     * @throws Exception
      * @return array outputs of the commands
      */
     public function exec()
@@ -548,8 +550,9 @@ class Cache extends Manager
     /**
      * method not allowed in cache mode
      *
-     * @deprecated
      * @param string $v de toute façon j'm'en fiche
+     *
+     * @deprecated
      * @throws Exception
      */
     public function setCurrentDb($v)
@@ -560,7 +563,7 @@ class Cache extends Manager
     /**
      * add a task to the execution list
      *
-     * @param string $key clé
+     * @param string   $key  clé
      * @param callable $func closure à ajouter
      *
      * @return void

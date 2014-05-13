@@ -88,8 +88,8 @@ abstract class Manager
      *       'port' => 6379,
      *       ));
      *
-     * @param array $params Manager params
-     * @param bool $purgeStatic do we have to purge the static array containing the configuration ?
+     * @param array $params      Manager params
+     * @param bool  $purgeStatic do we have to purge the static array containing the configuration ?
      *
      * @return \M6Web\Component\Redis\Manager
      */
@@ -128,7 +128,7 @@ abstract class Manager
     /**
      * Set an event dispatcher to notify redis command
      * @param Object $eventDispatcher The eventDispatcher object, which implement the notify method
-     * @param string $eventClass The event class used to create an event and send it to the event dispatcher
+     * @param string $eventClass      The event class used to create an event and send it to the event dispatcher
      *
      * @throws Exception
      * @return \M6Web\Component\Redis\Manager
@@ -234,7 +234,8 @@ abstract class Manager
     /**
      * set the server config
      * @param array $servers config
-     * @param bool $check do I have to check the config
+     * @param bool  $check   do I have to check the config
+     *
      * @throws Exception
      * @return \M6Web\Component\Redis\Manager
      */
@@ -252,29 +253,11 @@ abstract class Manager
     }
 
     /**
-     * @param $servers
-     * @throws Exception
-     * @return $this
-     */
-    protected function setInitServerConfig($servers)
-    {
-        if (!self::checkServerConfig($servers)) {
-            throw new Exception("Le parametre serverConfig est mal formé");
-        }
-
-        // allow set only if the class var is null (one init only)
-        if (is_null($this->serverInitConfig)) {
-            $this->serverInitConfig = $servers;
-        }
-
-        return $this;
-    }
-
-     /**
      * return a server according to the redis key passed
-     * @param string $key key
+     * @param string $key     server name
+     * @param array  $servers array of servers
      *
-     * @return string
+     * @return mixed
      */
     protected function getServerId($key, $servers = null)
     {
@@ -288,11 +271,11 @@ abstract class Manager
 
     /**
      * return a Redis object according to the key
-     * @param string $key cache key
+     * @param string $key     cache key
+     * @param array  $servers servers
      *
-     * @param null $servers
      * @throws Exception
-     * @return Redis
+     * @return object
      */
     protected function getRedis($key, $servers = null)
     {
@@ -320,7 +303,7 @@ abstract class Manager
      * buid a redis server with a config
      * @param string $idServer server id in the configuration
      *
-     * @return Redis or false
+     * @return object|false
      */
     public function getRedisFromServerConfig($idServer)
     {
@@ -360,8 +343,8 @@ abstract class Manager
 
     /**
      * connecte un server
-     * @param object|\Predis\Client $redis \Predis\Client
-     * @param array $server array('ip' => , 'port' => , 'timeout' =>)
+     * @param object|\Predis\Client $redis  \Predis\Client
+     * @param array                 $server array('ip' => , 'port' => , 'timeout' =>)
      *
      * @return boolean
      */
