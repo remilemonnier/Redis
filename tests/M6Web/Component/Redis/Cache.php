@@ -665,6 +665,31 @@ class Cache extends atoum\test
             ->integer($dbsize[$keyConfig]);
     }
 
+    public function testHashing()
+    {
+        $server_config = $this->getServerConfig('many');
+        $redis = new Redis\CacheTest(array(
+            'timeout' => self::TIMEOUT,
+            'server_config' => $server_config,
+            'namespace' => self::SPACENAME.__METHOD__
+        ));
 
+        $this
+            ->assert
+            ->if($redis->set('raoul', 'test'))
+            ->array($redis->getDeadRedis())
+            ->isEmpty();
+        $this
+            ->assert
+            ->if($redis->set('bar2', 'test'))
+            ->array($redis->getDeadRedis())
+            ->hasSize(1);
+        $this
+            ->assert
+            ->if($redis->set('raoul', 'test'))
+            ->array($redis->getDeadRedis())
+            ->hasSize(1)
+        ;
+    }
 
 }
