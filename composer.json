@@ -15,7 +15,7 @@
     },
     "require": {
         "php": ">=5.4.0",
-        "predis/predis": "0.8.4"
+        "predis/predis": "0.8.5"
     },
     "require-dev": {
         "atoum/atoum": "master-dev"

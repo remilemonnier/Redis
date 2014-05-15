@@ -14,8 +14,9 @@ class DB extends Manager
 
     /**
      * constructor - db is hardcoded
-     * @param array $params Manager parameters
-     * @param bool $purgeStatic do we have to purge the static server list ?
+     * @param array $params      Manager parameters
+     * @param bool  $purgeStatic do we have to purge the static server list ?
+     *
      * @throws Exception
      */
     public function __construct($params, $purgeStatic = false)
@@ -76,8 +77,8 @@ class DB extends Manager
     /**
      *  magic method to the \Redis() proxy
      *
-     * @param string $name method name
-     * @param array $arguments method arguments
+     * @param string $name      method name
+     * @param array  $arguments method arguments
      *
      * @throws Exception
      * @return mixed

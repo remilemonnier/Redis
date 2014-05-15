@@ -25,13 +25,19 @@ abstract class Manager
      * array of server configuration
      * @var array
      */
-    protected $serverConfig = array();
+    protected $serverConfig = null;
 
     /**
      * array of Redis object
      * @var array
      */
-    protected static $redisArray = array();
+    protected $aliveRedis = array();
+
+    /**
+     * array of Redis object
+     * @var array
+     */
+    protected $deadRedis = array();
 
     /**
      * db (as redis understand it)
@@ -53,7 +59,8 @@ abstract class Manager
 
     /**
      * get the current db
-     * @return string / int WTF !!!!!
+     * @throws Exception
+     * @return string|int
      */
     public function getCurrentDb()
     {
@@ -87,15 +94,15 @@ abstract class Manager
      *       'port' => 6379,
      *       ));
      *
-     * @param array $params Manager params
-     * @param bool $purgeStatic do we have to purge the static array containing the configuration ?
+     * @param array $params      Manager params
+     * @param bool  $purgeStatic do we have to purge the static array containing the configuration ?
      *
      * @return \M6Web\Component\Redis\Manager
      */
     public function __construct($params, $purgeStatic = false)
     {
         if ($purgeStatic === true) {
-            self::$redisArray = array();
+            $this->aliveRedis = array();
         }
         $this->init($params);
 
@@ -127,7 +134,7 @@ abstract class Manager
     /**
      * Set an event dispatcher to notify redis command
      * @param Object $eventDispatcher The eventDispatcher object, which implement the notify method
-     * @param string $eventClass The event class used to create an event and send it to the event dispatcher
+     * @param string $eventClass      The event class used to create an event and send it to the event dispatcher
      *
      * @throws Exception
      * @return \M6Web\Component\Redis\Manager
@@ -233,7 +240,8 @@ abstract class Manager
     /**
      * set the server config
      * @param array $servers config
-     * @param bool $check do I have to check the config
+     * @param bool  $check   do I have to check the config
+     *
      * @throws Exception
      * @return \M6Web\Component\Redis\Manager
      */
@@ -242,46 +250,55 @@ abstract class Manager
         if ($check and (!self::checkServerConfig($servers))) {
             throw new Exception("Le parametre serverConfig est mal formé");
         }
-        $this->serverConfig = $servers;
+        // allow set only if the class var is null (one init only)
+        if (is_null($this->serverConfig)) {
+            $this->serverConfig = $servers;
+        }
 
         return $this;
     }
 
-     /**
+    /**
      * return a server according to the redis key passed
-     * @param string $key key
+     * @param string $key     server name
+     * @param array  $servers array of servers
      *
-     * @return string
+     * @return mixed
      */
-    protected function getServerId($key)
+    protected function getServerId($key, $servers = null)
     {
-        $server = $this->getServerConfig();
-        $serverKeys = array_keys($server); // todo, set a cache ?
+        if (is_null($servers)) {
+            $servers = $this->getServerConfig();
+        }
+        $serverKeys = array_keys($servers);
 
         return $serverKeys[(int) (crc32($key) % count($serverKeys))];
     }
 
     /**
      * return a Redis object according to the key
-     * @param string $key cache key
+     * @param string $key     cache key
+     * @param array  $servers servers
      *
      * @throws Exception
-     * @return Redis
+     * @return object
      */
-    protected function getRedis($key)
+    protected function getRedis($key, $servers = null)
     {
-        $idServer = $this->getServerId($key);
-        $servers = $this->getServerConfig(); // all the servers
-        unset($servers[$idServer]); // supress the server that will be tested from the pile
+        if (is_null($servers)) {
+            $servers = $this->getServerConfig(); // all the servers
+        }
+        if (0 == count($servers)) {
+            throw new Exception("No redis server available ! ");
+        }
+        $idServer = $this->getServerId($key, $servers);
+
         if (!($redis = $this->getRedisFromServerConfig($idServer))) {
             $this->notifyEvent('redis_host_on_error', array($idServer));
-            if (count($servers) == 0) {
-                throw new Exception("No redis server available ! ");
-            }
             // find another server !!!
-            $this->setServerConfig($servers, false); // reinit the object without the not responding server
+            unset($servers[$idServer]); // supress the server
 
-            return $this->getRedis($key); // RECURSION ^^
+            return $this->getRedis($key, $servers); // RECURSION ^^
         }
         $redis->select($this->getCurrentDb());
 
@@ -292,21 +309,33 @@ abstract class Manager
      * buid a redis server with a config
      * @param string $idServer server id in the configuration
      *
-     * @return Redis or false
+     * @return object|false
      */
     public function getRedisFromServerConfig($idServer)
     {
-        if (array_key_exists($idServer, self::$redisArray)) {
-            return self::$redisArray[$idServer];
+        // redis already marked dead
+        if (array_key_exists($idServer, $this->deadRedis)) {
+            return false;
+        }
+        // redis already marked alive
+        if (array_key_exists($idServer, $this->aliveRedis)) {
+            if (!$this->aliveRedis[$idServer]->isConnected()) {
+                $this->deadRedis[$idServer] = 1;
+
+                return false;
+            }
+
+            return $this->aliveRedis[$idServer];
         }
 
         $redis = $this->getNewRedis();
-        if (!is_null($redis) and ($this->connectServer($redis, $this->getServerConfig($idServer)))) {
-            // peuple le tableau statique
-            self::$redisArray[$idServer] = $redis;
+        if ($this->connectServer($redis, $this->getServerConfig($idServer))) {
+            $this->aliveRedis[$idServer] = $redis;
 
             return $redis;
         } else {
+            $this->deadRedis[$idServer] = 1;
+
             return false;
         }
     }
@@ -328,8 +357,8 @@ abstract class Manager
 
     /**
      * connecte un server
-     * @param object|\Predis\Client $redis \Predis\Client
-     * @param array $server array('ip' => , 'port' => , 'timeout' =>)
+     * @param object|\Predis\Client $redis  \Predis\Client
+     * @param array                 $server array('ip' => , 'port' => , 'timeout' =>)
      *
      * @return boolean
      */

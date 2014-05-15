@@ -19,7 +19,7 @@ class Cache extends atoum\test
 
     const SPACENAME = 'testCacheCache';
 
-    const TIMEOUT = 1.0;
+    const TIMEOUT = 0.2;
 
     private function getServerConfig($config)
     {
@@ -66,7 +66,6 @@ class Cache extends atoum\test
      */
     public function testGetServerId()
     {
-        $redis =
         $server_config = $this->getServerConfig('many');
         $redis = new Redis\CacheTest(array(
             'timeout' => self::TIMEOUT,
@@ -77,10 +76,11 @@ class Cache extends atoum\test
             ->string($redis->MyGetServerId('raoul'))
             ->isEqualTo('php50');
         $this->assert
-            ->object($redis->set('foo', 'chuck'));
-        $this->assert
             ->string($redis->MyGetServerId('foo'))
             ->isEqualTo('php51'); // we have correctly switched on php51
+        $this->assert
+            ->string($redis->MyGetServerId('bar2'))
+            ->isEqualTo('phpraoul');
     }
 
 
@@ -665,6 +665,31 @@ class Cache extends atoum\test
             ->integer($dbsize[$keyConfig]);
     }
 
+    public function testHashing()
+    {
+        $server_config = $this->getServerConfig('many');
+        $redis = new Redis\CacheTest(array(
+            'timeout' => self::TIMEOUT,
+            'server_config' => $server_config,
+            'namespace' => self::SPACENAME.__METHOD__
+        ));
 
+        $this
+            ->assert
+            ->if($redis->set('raoul', 'test'))
+            ->array($redis->getDeadRedis())
+            ->isEmpty();
+        $this
+            ->assert
+            ->if($redis->set('bar2', 'test'))
+            ->array($redis->getDeadRedis())
+            ->hasSize(1);
+        $this
+            ->assert
+            ->if($redis->set('raoul', 'test'))
+            ->array($redis->getDeadRedis())
+            ->hasSize(1)
+        ;
+    }
 
 }

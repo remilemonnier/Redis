@@ -20,4 +20,9 @@ class CacheTest extends Cache
     {
         return $this->getServerId($key);
     }
+
+    public function getDeadRedis()
+    {
+        return $this->deadRedis;
+    }
 }
