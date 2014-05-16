@@ -24,6 +24,8 @@ M6Web\Component\Redis\Cache
 
 Send redis command to different server with a simple consistent hashing algorithm. Ignore server not responding.
 
+When a redis server fall, keys are dispatched on the other servers.
+
 ```
 $server_config = array(
         'php50' => array (
