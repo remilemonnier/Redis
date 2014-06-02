@@ -39,7 +39,7 @@ class Cache extends Manager
 
     /**
      * class constructor
-     * @param array $params      Manager parameters
+     * @param array $params Manager parameters
      *
      * @throws Exception
      */

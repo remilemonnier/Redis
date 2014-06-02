@@ -111,7 +111,7 @@ abstract class Manager
      *       'port' => 6379,
      *       ));
      *
-     * @param array $params      Manager params
+     * @param array $params Manager params
      *
      * @return \M6Web\Component\Redis\Manager
      */
@@ -413,6 +413,20 @@ abstract class Manager
     protected static function uncompress($data)
     {
         return gzuncompress($data);
+    }
+
+
+    /**
+     * forget all server marker dead or alive
+     *
+     * @return $this
+     */
+    public function forgetDeadOrAliveRedis()
+    {
+        $this->deadRedis  = array();
+        $this->aliveRedis = array();
+
+        return $this;
     }
 
 

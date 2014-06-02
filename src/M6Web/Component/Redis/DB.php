@@ -14,7 +14,7 @@ class DB extends Manager
 
     /**
      * constructor - db is hardcoded
-     * @param array $params      Manager parameters
+     * @param array $params Manager parameters
      *
      * @throws Exception
      */
