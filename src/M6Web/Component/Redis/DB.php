@@ -38,13 +38,14 @@ class DB extends Manager
 
     /**
      * return a predis object
-     * @param integer $serverRank server rank
      *
      * @throws Exception
      * @return \Redis
      */
-    public function getRedisObject($serverRank = 0)
+    public function getRedisObject()
     {
+        // DB work only with one server
+        $serverRank   = 0;
         $serverConfig = $this->getServerConfig();
 
         $keys = array_keys($serverConfig);
