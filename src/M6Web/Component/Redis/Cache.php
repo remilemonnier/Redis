@@ -40,17 +40,16 @@ class Cache extends Manager
     /**
      * class constructor
      * @param array $params      Manager parameters
-     * @param bool  $purgeStatic do we have to purge the static server list ?
      *
      * @throws Exception
      */
-    public function __construct($params, $purgeStatic = false)
+    public function __construct($params)
     {
         if (!isset($params['namespace'])) {
             throw new Exception("Le parametre namespace est obligatoire");
         }
         $this->setNamespace($params['namespace']);
-        parent::__construct($params, $purgeStatic);
+        parent::__construct($params);
         $this->currentDb = self::CACHE;
     }
 

@@ -112,15 +112,11 @@ abstract class Manager
      *       ));
      *
      * @param array $params      Manager params
-     * @param bool  $purgeStatic do we have to purge the static array containing the configuration ?
      *
      * @return \M6Web\Component\Redis\Manager
      */
-    public function __construct($params, $purgeStatic = false)
+    public function __construct($params)
     {
-        if ($purgeStatic === true) {
-            $this->aliveRedis = array();
-        }
         $this->init($params);
 
         return $this;

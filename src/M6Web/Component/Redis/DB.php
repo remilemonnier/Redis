@@ -15,11 +15,10 @@ class DB extends Manager
     /**
      * constructor - db is hardcoded
      * @param array $params      Manager parameters
-     * @param bool  $purgeStatic do we have to purge the static server list ?
      *
      * @throws Exception
      */
-    public function __construct($params, $purgeStatic = false)
+    public function __construct($params)
     {
         $maxNbServer = 1;
         $this->setCurrentDb(1); // default hardcoded choice for the db
@@ -33,7 +32,7 @@ class DB extends Manager
             throw new Exception("cant use the namespace option in this class");
         }
 
-        return parent::__construct($params, $purgeStatic);
+        return parent::__construct($params);
     }
 
 
