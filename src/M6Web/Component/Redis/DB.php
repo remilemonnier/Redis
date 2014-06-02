@@ -36,24 +36,6 @@ class DB extends Manager
         return parent::__construct($params, $purgeStatic);
     }
 
-    /**
-     * @param integer $v
-     *
-     * @throws Exception
-     * @return object DB
-     */
-    public function setCurrentDb($v)
-    {
-        if (!is_int($v)) {
-            throw new Exception("la db doit être décrite par un entier ^^");
-        }
-        if ($v == Cache::CACHE) {
-            throw new Exception("cant use ".Cache::CACHE." in class ".__CLASS__);
-        }
-        $this->currentDb = $v;
-
-        return $this;
-    }
 
     /**
      * return a predis object
