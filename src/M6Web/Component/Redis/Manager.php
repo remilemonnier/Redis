@@ -64,7 +64,7 @@ abstract class Manager
     public function setCurrentDb($v)
     {
         if (!is_int($v)) {
-            throw new Exception("la db doit être décrite par un entier ^^");
+            throw new Exception("please describe the db as an integer ^^");
         }
         if ($v == Cache::CACHE) {
             throw new Exception("cant use ".Cache::CACHE." in class ".__CLASS__);
