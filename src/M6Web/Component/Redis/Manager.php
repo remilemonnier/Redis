@@ -368,7 +368,7 @@ abstract class Manager
             $redis->__construct(array(
                 'host' => $server['ip'],
                 'port' => (int) $server['port'],
-                'connection_timeout' => $this->getTimeout()
+                'timeout' => $this->getTimeout()
                 ));
                 // check if we are connected
             $redis->connect();
