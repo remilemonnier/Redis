@@ -42,10 +42,8 @@ class DB extends Manager
      * @throws Exception
      * @return \Redis
      */
-    public function getRedisObject()
+    public function getRedisObject($serverRank = 0)
     {
-        // DB work only with one server
-        $serverRank   = 0;
         $serverConfig = $this->getServerConfig();
 
         $keys = array_keys($serverConfig);
