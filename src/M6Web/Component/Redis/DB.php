@@ -14,12 +14,11 @@ class DB extends Manager
 
     /**
      * constructor - db is hardcoded
-     * @param array $params      Manager parameters
-     * @param bool  $purgeStatic do we have to purge the static server list ?
+     * @param array $params Manager parameters
      *
      * @throws Exception
      */
-    public function __construct($params, $purgeStatic = false)
+    public function __construct($params)
     {
         $maxNbServer = 1;
         $this->setCurrentDb(1); // default hardcoded choice for the db
@@ -33,31 +32,12 @@ class DB extends Manager
             throw new Exception("cant use the namespace option in this class");
         }
 
-        return parent::__construct($params, $purgeStatic);
+        return parent::__construct($params);
     }
 
-    /**
-     * @param integer $v
-     *
-     * @throws Exception
-     * @return object DB
-     */
-    public function setCurrentDb($v)
-    {
-        if (!is_int($v)) {
-            throw new Exception("la db doit être décrite par un entier ^^");
-        }
-        if ($v == Cache::CACHE) {
-            throw new Exception("cant use ".Cache::CACHE." in class ".__CLASS__);
-        }
-        $this->currentDb = $v;
-
-        return $this;
-    }
 
     /**
      * return a predis object
-     * @param integer $serverRank server rank
      *
      * @throws Exception
      * @return \Redis

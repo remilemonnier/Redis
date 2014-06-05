@@ -55,7 +55,24 @@ abstract class Manager
      * set the current db
      * @param string $v db
      */
-    abstract public function setCurrentDb($v);
+    /**
+     * @param integer $v
+     *
+     * @throws Exception
+     * @return object DB
+     */
+    public function setCurrentDb($v)
+    {
+        if (!is_int($v)) {
+            throw new Exception("please describe the db as an integer ^^");
+        }
+        if ($v == Cache::CACHE) {
+            throw new Exception("cant use ".Cache::CACHE." in class ".__CLASS__);
+        }
+        $this->currentDb = $v;
+
+        return $this;
+    }
 
     /**
      * get the current db
@@ -94,16 +111,12 @@ abstract class Manager
      *       'port' => 6379,
      *       ));
      *
-     * @param array $params      Manager params
-     * @param bool  $purgeStatic do we have to purge the static array containing the configuration ?
+     * @param array $params Manager params
      *
      * @return \M6Web\Component\Redis\Manager
      */
-    public function __construct($params, $purgeStatic = false)
+    public function __construct($params)
     {
-        if ($purgeStatic === true) {
-            $this->aliveRedis = array();
-        }
         $this->init($params);
 
         return $this;
@@ -400,6 +413,20 @@ abstract class Manager
     protected static function uncompress($data)
     {
         return gzuncompress($data);
+    }
+
+
+    /**
+     * forget all server marker dead or alive
+     *
+     * @return $this
+     */
+    public function forgetDeadOrAliveRedis()
+    {
+        $this->deadRedis  = array();
+        $this->aliveRedis = array();
+
+        return $this;
     }
 
 
