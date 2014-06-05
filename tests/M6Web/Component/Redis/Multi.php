@@ -49,6 +49,18 @@ class Multi extends atoum\test
                 ),
             );
         }
+        if ($config == 'unavailable') {
+            return array(
+                'phpraoul' => array (  // mauvais server
+                    'ip' => '1.2.3.4',
+                    'port' => 6379,
+                ),
+                'phpraoul2' => array (  // mauvais server
+                    'ip' => '1.2.3.5',
+                    'port' => 6379,
+                ),
+            );
+        }
         throw new \Exception("one or wrong can be accessed via ".__METHOD__." not : ".$config);
     }
 
@@ -67,24 +79,47 @@ class Multi extends atoum\test
             ->isInstanceOf('\M6Web\Component\Redis\Exception');
     }
 
-    public function testAllbehavior()
+    public function testWorking()
     {
         $server_config = $this->getServerConfig('many');
+
         $this->assert
             ->if($redis = new redis\Multi([
-                    'timeout' => 0.1,
-                    'server_config' => $server_config
-                ]))
+                'timeout' => 0.1,
+                'server_config' => $server_config
+            ]))
             ->then($redis->onAllServer()->set(self::spacename.'foo', 'bar'))
-            ->string($redis->onOneRandomServer()->get(self::spacename.'foo'))
-            ->isEqualTo('bar');
+                ->string($redis->onOneRandomServer()->get(self::spacename.'foo'))
+                    ->isEqualTo('bar');
+    }
 
+    public function testNoRandomServerAvailable()
+    {
+        $server_config = $this->getServerConfig('unavailable');
+
+        $this->assert
+            ->if($redis = new redis\Multi([
+                'timeout' => 0.1,
+                'server_config' => $server_config
+            ]))
+            ->then
+                ->exception(
+                    function() use ($redis) {
+                        $redis->onOneRandomServer()->get(self::spacename.'foo');
+                    }
+                )
+                ->isInstanceOf('\M6Web\Component\Redis\Exception')
+                    ->hasMessage("Can't connect to a random redis server");
+    }
+
+    public function testManyWrong()
+    {
         $server_config = $this->getServerConfig('manywrong');
         $this->assert
             ->if($redis = new redis\Multi([
-                    'timeout' => 0.1,
-                    'server_config' => $server_config
-                ]))
+                'timeout' => 0.1,
+                'server_config' => $server_config
+            ]))
             ->then()
             ->exception(
                 function() use ($redis) {
@@ -92,8 +127,11 @@ class Multi extends atoum\test
                 }
             )
             ->isInstanceOf('\M6Web\Component\Redis\Exception')
-            ->string($redis->onAllServer(false)->ping());
+            ->string($redis->onAllServer($strict = false)->ping());
+    }
 
+    public function testBadUsage()
+    {
         $server_config = $this->getServerConfig('many');
         $this->assert
             ->if($redis = new redis\Multi([

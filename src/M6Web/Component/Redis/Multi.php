@@ -40,6 +40,7 @@ class Multi extends Manager
     /**
      * select one random server
      *
+     * @throws Exception
      * @return $this
      */
     public  function onOneRandomServer()
@@ -50,12 +51,14 @@ class Multi extends Manager
             $randServerRank = array_rand($keys);
             if ($redis = $this->getRedisFromServerConfig($keys[$randServerRank])) {
                 $this->selectedRedis = array($redis);
-                // got one redis
-                break;
             } else {
                 unset($keys[$randServerRank]);
             }
-        } while (!empty($keys));
+        } while (!empty($keys) && empty($this->selectedRedis));
+
+        if (empty($this->selectedRedis)) {
+            throw new Exception("Can't connect to a random redis server");
+        }
 
         return $this;
     }
