@@ -79,11 +79,11 @@ Send redis command to multiple server or send command to a random redis server.
 ```php
 $server_config = array(
         'php50' => array (
-            'ip' => '127.0.0.1',
+            'ip' => 'x.x.x.1',
             'port' => 6379,
             ),
         'php51' => array (
-            'ip' => '127.0.0.1',
+            'ip' => 'x.x.x.2',
             'port' => 6379,
             ),
 );
