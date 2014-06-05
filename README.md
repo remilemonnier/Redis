@@ -68,6 +68,44 @@ M6Web\Component\Redis\DB
 
 Access to the predis object simply calling the predis methods.
 
+### Multi mode
+
+```php
+M6Web\Component\Redis\Multi
+```
+
+Send redis command to multiple server or send command to a random redis server.
+
+```php
+$server_config = array(
+        'php50' => array (
+            'ip' => '127.0.0.1',
+            'port' => 6379,
+            ),
+        'php51' => array (
+            'ip' => '127.0.0.1',
+            'port' => 6379,
+            ),
+);
+$redis = new redis\Multi(['timeout' => 0.1,
+                         'server_config' => $server_config]);
+
+try{
+    $redis->onAllServer($strict = true)->set('foo', 'bar');
+} catch(redis\Exception $e) {
+    die('error occured on setting foo bar on a server');
+}
+// strict mode disabled, don't care about server availability
+$redis->onAllServer($strict = false)->set('foo', 'bar');
+
+// read value on a random server
+try {
+    $value = $redis->onOneRandomServer()->get('foo');
+} catch(redis\Exception $e) {
+    die('no server available');
+}
+```
+
 ## tests
 
 
