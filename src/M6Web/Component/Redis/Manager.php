@@ -22,6 +22,12 @@ abstract class Manager
     protected $timeout = 0.2;
 
     /**
+     * read write default timeout
+     * @var float
+     */
+    protected $read_write_timeout = 0.2;
+
+    /**
      * array of server configuration
      * @var array
      */
@@ -186,6 +192,12 @@ abstract class Manager
         if (isset($params['timeout'])) {
             $this->timeout = $params['timeout'];
         }
+        if (isset($params['read_write_timeout'])) {
+            $this->read_write_timeout = $params['read_write_timeout'];
+        } else {
+            // use the same timeout
+            $this->read_write_timeout = $this->timeout;
+        }
         if (isset($params['compress']) and is_bool($params['compress'])) {
             $this->compress = $params['compress'];
         }
@@ -233,6 +245,16 @@ abstract class Manager
     public function getTimeout()
     {
         return (float) $this->timeout;
+    }
+
+    /**
+     * getReadWriteTimeout
+     *
+     * @return float
+     */
+    public function getReadWriteTimeout()
+    {
+        return (float) $this->read_write_timeout;
     }
 
     /**
@@ -381,7 +403,8 @@ abstract class Manager
             $redis->__construct(array(
                 'host' => $server['ip'],
                 'port' => (int) $server['port'],
-                'timeout' => $this->getTimeout()
+                'timeout' => $this->getTimeout(),
+                'read_write_timeout' => $this->getReadWriteTimeout()
                 ));
                 // check if we are connected
             $redis->connect();
