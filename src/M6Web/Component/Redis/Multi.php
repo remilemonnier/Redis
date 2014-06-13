@@ -50,7 +50,7 @@ class Multi extends Manager
         do {
             $randServerRank = array_rand($keys);
             if ($redis = $this->getRedisFromServerConfig($keys[$randServerRank])) {
-                $this->selectedRedis = array($redis);
+                $this->selectedRedis = array($keys[$randServerRank] => $redis);
             } else {
                 unset($keys[$randServerRank]);
             }
@@ -75,7 +75,7 @@ class Multi extends Manager
     {
         foreach ($this->getServerConfig() as $idServer => $config) {
             if ($redis = $this->getRedisFromServerConfig($idServer)) {
-                $this->selectedRedis[] = $redis;
+                $this->selectedRedis[$idServer] = $redis;
             } else {
                 if ($strict) {
                     throw new Exception('cant connect to redis '.$idServer);
@@ -104,14 +104,14 @@ class Multi extends Manager
             throw new Exception("please call onOneRandomServer or onAllServer before ".__METHOD__);
         }
 
-        foreach ($this->selectedRedis as $redis) {
+        foreach ($this->selectedRedis as $idServer => $redis) {
                 $start = microtime(true);
                 try {
                     $ret = call_user_func_array(array($redis, $name), $arguments);
                     $this->notifyEvent($name, $arguments, microtime(true) - $start);
 
                     $toReturn .= $ret;
-                } catch (\Predis\ClientException $e) {
+                } catch (\Predis\PredisException $e) {
                     throw new Exception("Error calling the method ".$name." : ".$e->getMessage()." on redis : ".$idServer);
                 }
         }

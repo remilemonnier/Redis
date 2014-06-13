@@ -72,7 +72,7 @@ class DB extends Manager
                 $this->notifyEvent($name, $arguments, microtime(true) - $start);
 
                 return $ret;
-            } catch (\Predis\ClientException $e) {
+            } catch (\Predis\PredisException $e) {
                 throw new Exception("Error calling the method ".$name." : ".$e->getMessage());
             }
         } else {
