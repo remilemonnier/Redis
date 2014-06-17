@@ -23,9 +23,6 @@ class Multi extends Manager
     public function __construct($params)
     {
         $this->setCurrentDb(1); // default hardcoded choice for the db
-        if (count($params['server_config']) <= 1) {
-            throw new Exception("you have to declare more than one server in server_config found ");
-        }
         if (isset($params['compress']) and ($params['compress'] === true)) {
             throw new Exception("cant use the compress option in this class");
         }

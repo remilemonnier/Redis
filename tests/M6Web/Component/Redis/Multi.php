@@ -65,19 +65,6 @@ class Multi extends atoum\test
     }
 
 
-    public function testInit()
-    {
-        $server_config = $this->getServerConfig('wrong');
-        $this->assert
-            ->exception(
-                function() use ($server_config) {
-                    $redis = new redis\Multi(array(
-                        'timeout' => 1,
-                        'server_config' => $server_config
-                    ));
-                })
-            ->isInstanceOf('\M6Web\Component\Redis\Exception');
-    }
 
     public function testWorking()
     {
