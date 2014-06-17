@@ -179,7 +179,7 @@ abstract class Manager
     {
         // check serverConfig
         if (!isset($params['server_config'])) {
-            throw new Exception("Le parametre serverConfig est obligatoire");
+            throw new Exception("parameter serverConfig is mandatory");
         }
 
         $this->setServerConfig($params['server_config']);
