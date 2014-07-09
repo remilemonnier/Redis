@@ -95,7 +95,7 @@ class Multi extends Manager
      */
     public function __call($name, $arguments)
     {
-        $toReturn = '';
+        $toReturn = [];
 
         if (empty($this->selectedRedis)) {
             throw new Exception("please call onOneRandomServer or onAllServer before ".__METHOD__);
@@ -107,7 +107,7 @@ class Multi extends Manager
                     $ret = call_user_func_array(array($redis, $name), $arguments);
                     $this->notifyEvent($name, $arguments, microtime(true) - $start);
 
-                    $toReturn .= $ret;
+                    $toReturn[$idServer] = $ret;
                 } catch (\Predis\PredisException $e) {
                     throw new Exception("Error calling the method ".$name." : ".$e->getMessage()." on redis : ".$idServer);
                 }
