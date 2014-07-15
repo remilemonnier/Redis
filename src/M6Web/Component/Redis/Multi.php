@@ -13,6 +13,8 @@ class Multi extends Manager
 
     protected $selectedRedis = array();
 
+    protected $multiRedis = false;
+
     /**
      * constructor
      *
@@ -57,6 +59,8 @@ class Multi extends Manager
             throw new Exception("Can't connect to a random redis server");
         }
 
+        $this->multiRedis = false;
+
         return $this;
     }
 
@@ -80,12 +84,45 @@ class Multi extends Manager
             }
         }
 
+        $this->multiRedis = true;
+
+        return $this;
+    }
+
+    /**
+     * select one server
+     *
+     * @param string $idServer
+     *
+     * @throws Exception
+     * @return $this
+     */
+    public function onOneServer($idServer, $strict = true)
+    {
+        $redisList = $this->getServerConfig();
+
+        // The server must exist..
+        if (array_key_exists($idServer, $redisList)) {
+            // and must be available
+            if ($redis = $this->getRedisFromServerConfig($idServer)) {
+                $this->selectedRedis[$idServer] = $redis;
+            } else {
+                if ($strict) {
+                    throw new Exception('cant connect to redis ' . $idServer);
+                }
+            }
+        } else {
+            throw new Exception('unknown redis '.$idServer);
+        }
+
+        $this->multiRedis = false;
+
         return $this;
     }
 
 
     /**
-     *  magic method to the \Redis() proxy
+     * magic method to the \Redis() proxy
      *
      * @param string $name      method name
      * @param array  $arguments method arguments
@@ -95,28 +132,47 @@ class Multi extends Manager
      */
     public function __call($name, $arguments)
     {
-        $toReturn = '';
-
         if (empty($this->selectedRedis)) {
-            throw new Exception("please call onOneRandomServer or onAllServer before ".__METHOD__);
+            throw new Exception("please call onOneRandomServer, onOneServer or onAllServer before ".__METHOD__);
         }
 
-        foreach ($this->selectedRedis as $idServer => $redis) {
-                $start = microtime(true);
-                try {
-                    $ret = call_user_func_array(array($redis, $name), $arguments);
-                    $this->notifyEvent($name, $arguments, microtime(true) - $start);
-
-                    $toReturn .= $ret;
-                } catch (\Predis\PredisException $e) {
-                    throw new Exception("Error calling the method ".$name." : ".$e->getMessage()." on redis : ".$idServer);
-                }
+        // Call to all available servers
+        if ($this->multiRedis) {
+            $toReturn = [];
+            foreach ($this->selectedRedis as $idServer => $redis) {
+                    $toReturn[$idServer] = $this->callRedisCommand($redis, $name, $arguments);
+            }
+        } else {
+            // Only one server
+            $toReturn = $this->callRedisCommand(array_shift($this->selectedRedis), $name, $arguments);
         }
+
         // reinit selected Redis
         $this->selectedRedis = array();
 
         return $toReturn;
     }
 
+    /**
+     * call a redis command
+     *
+     * @param \Predis\Client $redis
+     * @param string         $name
+     * @param array          $arguments
+     *
+     * @throws Exception
+     * @return mixed
+     */
+    protected function callRedisCommand(\Predis\Client $redis, $name, $arguments)
+    {
+        $start = microtime(true);
+        try {
+            $return = call_user_func_array(array($redis, $name), $arguments);
+            $this->notifyEvent($name, $arguments, microtime(true) - $start);
+        } catch (\Predis\PredisException $e) {
+            throw new Exception("Error calling the method ".$name." : ".$e->getMessage()." on redis : ".$idServer);
+        }
 
-} 
+        return $return;
+    }
+}

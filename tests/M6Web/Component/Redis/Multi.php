@@ -64,8 +64,6 @@ class Multi extends atoum\test
         throw new \Exception("one or wrong can be accessed via ".__METHOD__." not : ".$config);
     }
 
-
-
     public function testWorking()
     {
         $server_config = $this->getServerConfig('many');
@@ -99,6 +97,58 @@ class Multi extends atoum\test
                     ->hasMessage("Can't connect to a random redis server");
     }
 
+    public function testOneServerWorking()
+    {
+        $server_config = $this->getServerConfig('many');
+
+        $this->assert
+            ->if($redis = new redis\Multi([
+                'timeout' => 0.1,
+                'server_config' => $server_config
+            ]))
+            ->then($redis->onOneServer('php51')->set(self::spacename.'foo', 'bar'))
+                ->string($redis->onOneServer('php51')->get(self::spacename.'foo'))
+                    ->isEqualTo('bar');
+    }
+
+    public function testNoOneServerAvailable()
+    {
+        $server_config = $this->getServerConfig('unavailable');
+
+        $this->assert
+            ->if($redis = new redis\Multi([
+                'timeout' => 0.1,
+                'server_config' => $server_config
+            ]))
+            ->then
+                ->exception(
+                    function() use ($redis) {
+                        $redis->onOneServer('php51')->get(self::spacename.'foo');
+                    }
+                )
+                ->isInstanceOf('\M6Web\Component\Redis\Exception')
+                    ->hasMessage("unknown redis php51");
+    }
+
+    public function testOneServerWrong()
+    {
+        $server_config = $this->getServerConfig('wrong');
+
+        $this->assert
+            ->if($redis = new redis\Multi([
+                'timeout' => 0.1,
+                'server_config' => $server_config
+            ]))
+            ->then
+                ->exception(
+                    function() use ($redis) {
+                        $redis->onOneServer('phpraoul')->get(self::spacename.'foo');
+                    }
+                )
+                ->isInstanceOf('\M6Web\Component\Redis\Exception')
+                    ->hasMessage("cant connect to redis phpraoul");
+    }
+
     public function testManyWrong()
     {
         $server_config = $this->getServerConfig('manywrong');
@@ -114,7 +164,10 @@ class Multi extends atoum\test
                 }
             )
             ->isInstanceOf('\M6Web\Component\Redis\Exception')
-            ->string($redis->onAllServer($strict = false)->ping());
+            ->array($redis->onAllServer($strict = false)->ping())
+                ->contains(true)
+                ->size
+                    ->isEqualTo(1);
     }
 
     public function testBadUsage()
@@ -150,4 +203,4 @@ class Multi extends atoum\test
             }
         }
     }
-} 
+}
