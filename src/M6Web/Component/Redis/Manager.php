@@ -182,6 +182,7 @@ abstract class Manager
             throw new Exception("parameter serverConfig is mandatory");
         }
 
+        ksort($params['server_config']);
         $this->setServerConfig($params['server_config']);
         if (isset($params['timeout'])) {
             $this->timeout = $params['timeout'];
