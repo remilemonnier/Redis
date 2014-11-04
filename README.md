@@ -45,7 +45,7 @@ $redis = new redis\Cache(array(
     'timeout' => self::TIMEOUT,
     'server_config' => $server_config,
     'namespace' => self::SPACENAME
-    ),
+    ));
 $redis->set('foo', 'bar');
 $foo = $redis->get('foo');
 if ($redis->exists('raoul')) die('ho mon dieu il existe vraiment !');
@@ -104,6 +104,21 @@ try {
 } catch(redis\Exception $e) {
     die('no server available');
 }
+```
+
+
+## timeouts
+
+A connection timeout is availaible through the `timeout` parameter. A read write timeout can be specified with the `read_write_timeout` parameter (by default, equal to the connection timeout).
+
+```php
+$redis = new redis\Cache(array(
+    'timeout' => 0.5,
+    'read_write_timeout' => 0.2,
+    'server_config' => $server_config,
+    'namespace' => self::SPACENAME
+    ),
+);
 ```
 
 ## tests
