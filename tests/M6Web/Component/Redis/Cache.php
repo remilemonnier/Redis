@@ -200,7 +200,7 @@ class Cache extends atoum\test
             ->float($redis->getTimeout())
             ->isEqualTo(self::TIMEOUT);
 
-        // construction sans timeout
+        // without timeout
         $redis = new redis\Cache(array(
             'server_config' => $server_config,
             'namespace' => self::SPACENAME
@@ -208,6 +208,16 @@ class Cache extends atoum\test
         $this->assert
             ->float($redis->getTimeout());
 
+        // test with read write timeout
+        $redis = new redis\Cache(array(
+                'server_config' => $server_config,
+                'namespace' => self::SPACENAME,
+                'timeout' => self::TIMEOUT,
+                'read_write_timeout' => self::TIMEOUT + 0.2
+            ));
+        $this->assert
+            ->float($redis->getReadWriteTimeout())
+            ->isEqualTo($redis->getTimeout() + 0.2);
     }
 
     /**
