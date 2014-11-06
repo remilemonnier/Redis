@@ -86,7 +86,7 @@ class Cache extends Manager
         if ($ret and $this->getCompress()) {
             return self::uncompress($ret);
         } elseif (is_null($ret)) {
-            return false;
+            return null;
 
         } else {
             return $ret;
