@@ -75,7 +75,7 @@ class Cache extends Manager
      * get a value from the cache
      * @param string $key clé
      *
-     * @return mixed
+     * @return mixed|null Null if no value available
      */
     public function get($key)
     {
@@ -85,9 +85,6 @@ class Cache extends Manager
         $this->notifyEvent('get', array($this->getPatternKey().$key), microtime(true) - $start);
         if ($ret and $this->getCompress()) {
             return self::uncompress($ret);
-        } elseif (is_null($ret)) {
-            return null;
-
         } else {
             return $ret;
         }
