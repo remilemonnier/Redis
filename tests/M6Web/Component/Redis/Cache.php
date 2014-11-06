@@ -44,15 +44,15 @@ class Cache extends atoum\test
                     'ip' => '127.0.0.1',
                     'port' => 6379,
                     ),
-        'phpraoul' => array (  // wrong server
-            'ip' => '1.2.3.4',
-            'port' => 6379,
-            ),
-        'php51' => array (
-            'ip' => '127.0.0.1',
-            'port' => 6379,
-            )
-        );
+                'phpraoul' => array (  // wrong server
+                    'ip' => '1.2.3.4',
+                    'port' => 6379,
+                    ),
+                'php51' => array (
+                    'ip' => '127.0.0.1',
+                    'port' => 6379,
+                    )
+                );
         }
         throw new \Exception("one, many or wrong can be accessed via ".__METHOD__." not : ".$config);
     }
@@ -77,10 +77,10 @@ class Cache extends atoum\test
             ->isEqualTo('php50');
         $this->assert
             ->string($redis->MyGetServerId('foo'))
-            ->isEqualTo('php51'); // we have correctly switched on php51
+            ->isEqualTo('phpraoul'); // we have correctly switched on php51
         $this->assert
             ->string($redis->MyGetServerId('bar2'))
-            ->isEqualTo('phpraoul');
+            ->isEqualTo('php51');
     }
 
 
@@ -691,7 +691,7 @@ class Cache extends atoum\test
             ->isEmpty();
         $this
             ->assert
-            ->if($redis->set('bar2', 'test'))
+            ->if($redis->set('foo', 'test'))
             ->array($redis->getDeadRedis())
             ->hasSize(1);
         $this
