@@ -44,15 +44,15 @@ class Cache extends atoum\test
                     'ip' => '127.0.0.1',
                     'port' => 6379,
                     ),
-        'phpraoul' => array (  // wrong server
-            'ip' => '1.2.3.4',
-            'port' => 6379,
-            ),
-        'php51' => array (
-            'ip' => '127.0.0.1',
-            'port' => 6379,
-            )
-        );
+                'phpraoul' => array (  // wrong server
+                    'ip' => '1.2.3.4',
+                    'port' => 6379,
+                    ),
+                'php51' => array (
+                    'ip' => '127.0.0.1',
+                    'port' => 6379,
+                    )
+                );
         }
         throw new \Exception("one, many or wrong can be accessed via ".__METHOD__." not : ".$config);
     }
@@ -77,10 +77,10 @@ class Cache extends atoum\test
             ->isEqualTo('php50');
         $this->assert
             ->string($redis->MyGetServerId('foo'))
-            ->isEqualTo('php51'); // we have correctly switched on php51
+            ->isEqualTo('phpraoul'); // we have correctly switched on php51
         $this->assert
             ->string($redis->MyGetServerId('bar2'))
-            ->isEqualTo('phpraoul');
+            ->isEqualTo('php51');
     }
 
 
@@ -96,8 +96,8 @@ class Cache extends atoum\test
         );
 
         $this->assert
-            ->boolean($redis->get(__METHOD__."rrrrr"))
-            ->isEqualTo(false);
+            ->variable($redis->get(__METHOD__."rrrrr"))
+            ->isNull();
     }
 
 
@@ -307,8 +307,8 @@ class Cache extends atoum\test
             ->integer($redis->flush()) // flush
             ->isEqualTo(3);
         $this->assert
-            ->boolean($redis->get('foo'))
-            ->isEqualTo(false)
+            ->variable($redis->get('foo'))
+            ->isNull()
             ->integer($redis->flush())
             ->isEqualTo(0);
     }
@@ -333,8 +333,8 @@ class Cache extends atoum\test
             ->isEqualTo('bar');
         $redis->setNamespace(self::SPACENAME.'2');
         $this->assert
-            ->boolean($redis->get('foo'))
-            ->isEqualTo(false);
+            ->variable($redis->get('foo'))
+            ->isNull();
     }
 
     /**
@@ -356,8 +356,8 @@ class Cache extends atoum\test
             ->isEqualTo('tobeexpired');
         sleep(6);
         $this->assert
-            ->boolean($redis->get('foo'))
-            ->isEqualTo(false);
+            ->variable($redis->get('foo'))
+            ->isNull();
     }
 
     public function testExpireFunction()
@@ -421,8 +421,8 @@ class Cache extends atoum\test
         $this->assert
             ->integer(count($redis->getAllKeys()))
             ->isEqualTo(0) // rien n'a été inséré
-            ->boolean($redis->get('foo'))
-            ->isEqualTo(false);
+            ->variable($redis->get('foo'))
+            ->isNull();
         $this->assert
             ->array($redis->multi()
                 ->set('foo', 'bar')
@@ -430,8 +430,8 @@ class Cache extends atoum\test
                 ->set('foo3', 'bar3')
                 ->exec());
         $this->assert
-            ->boolean($redis->get('foo0'))
-            ->isEqualTo(false);
+            ->variable($redis->get('foo0'))
+            ->isNull();
         $this->assert
             ->integer(count($redis->getAllKeys()))
             ->isEqualTo(6)
@@ -526,8 +526,8 @@ class Cache extends atoum\test
             ->isEqualTo('kikoolol')
             ->integer($redis->del('foo'))
             ->isEqualTo(1)
-            ->boolean($redis->get('foo'))
-            ->isEqualTo(false);
+            ->variable($redis->get('foo'))
+            ->isNull();
     }
 
     /**
@@ -691,7 +691,7 @@ class Cache extends atoum\test
             ->isEmpty();
         $this
             ->assert
-            ->if($redis->set('bar2', 'test'))
+            ->if($redis->set('foo', 'test'))
             ->array($redis->getDeadRedis())
             ->hasSize(1);
         $this
