@@ -1,7 +1,4 @@
 <?php
-/**
- * classe utilisée pour les tests
- */
 
 namespace M6Web\Component\Redis\tests\fake;
 

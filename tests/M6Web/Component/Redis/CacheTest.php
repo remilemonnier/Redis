@@ -1,9 +1,6 @@
 <?php
-/**
- * @author o_mansour
- */
+
 namespace M6Web\Component\Redis;
-include_once __DIR__.'/../../../../vendor/autoload.php';
 
 /**
  * class used for unit testing U

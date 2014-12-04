@@ -1,11 +1,6 @@
 <?php
-/**
- * This class require a redis setuped on localhost
- */
 
 namespace M6Web\Component\Redis\tests\units;
-
-include_once __DIR__.'/../../../../vendor/autoload.php';
 
 use \mageekguy\atoum;
 use \M6Web\Component\Redis;
