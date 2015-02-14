@@ -75,7 +75,7 @@ class Cache extends atoum\test
             ->isEqualTo('php50');
         $this->assert
             ->string($redis->MyGetServerId('foo'))
-            ->isEqualTo('phpraoul'); // we have correctly switched on php51
+            ->isEqualTo('phpraoul');
         $this->assert
             ->string($redis->MyGetServerId('bar2'))
             ->isEqualTo('php51');
@@ -694,7 +694,7 @@ class Cache extends atoum\test
             ->hasSize(1);
         $this
             ->assert
-            ->if($redis->set('raoul', 'test'))
+            ->if($redis->set('bar3', 'test'))
             ->array($redis->getDeadRedis())
             ->hasSize(1)
         ;

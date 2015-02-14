@@ -8,6 +8,7 @@
 
 namespace M6Web\Component\Redis;
 
+use Predis;
 
 /**
  * Manager for Redis classes
@@ -107,10 +108,17 @@ abstract class Manager
     protected $eventClass = null;
 
     /**
+     * number of reconnect if a command fail (passed to predisProxy)
+     * @var int
+     */
+    protected $reconnect = 0;
+
+    /**
      * constructor
      * $params = array(
      * 'timeout' => 2,
      * 'compress' => true,
+     * 'reconnect' => 2
      * 'server_config' = array(
      *   'php50' => array (
      *       'ip' => '193.22.143.110',
@@ -201,6 +209,11 @@ abstract class Manager
         }
         if (isset($params['compress']) and is_bool($params['compress'])) {
             $this->compress = $params['compress'];
+        }
+
+        if (isset($params['reconnect']) and is_int($params['reconnect']))
+        {
+            $this->reconnect = $params['reconnect'];
         }
 
         return $this;
@@ -380,15 +393,13 @@ abstract class Manager
      * return a Predis object
      *
      * @throws Exception
-     * @return \Predis\Client
+     * @return PredisProxy
      */
     protected function getNewRedis()
     {
-        if (class_exists('\Predis\Client')) {
-            return new \Predis\Client();
-        } else {
-            throw new Exception("Cant find the Predis classes");
-        }
+        $proxy = new PredisProxy();
+
+        return $proxy->setMaxConnectionLostAllowed($this->reconnect);
     }
 
     /**
@@ -398,10 +409,10 @@ abstract class Manager
      *
      * @return boolean
      */
-    protected function connectServer(\Predis\Client $redis, $server)
+    protected function connectServer(PredisProxy $redis, $server)
     {
         try {
-            $redis->__construct(array(
+            $redis->callRedisConstructor(array(
                 'host' => $server['ip'],
                 'port' => (int) $server['port'],
                 'timeout' => $this->getTimeout(),
@@ -411,7 +422,7 @@ abstract class Manager
             $redis->connect();
 
             return true;
-        } catch (\Predis\Connection\ConnectionException $e) {
+        } catch (Predis\Connection\ConnectionException $e) {
             return false;
         }
 
