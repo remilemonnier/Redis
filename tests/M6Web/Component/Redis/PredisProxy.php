@@ -83,6 +83,7 @@ class PredisProxy extends atoum\test {
         $predisClient->getMockController()->connect = function() use ($clientException, $exceptionCount) {
             if ($exceptionCount < 2) {
                 $exceptionCount++;
+                // after 2 conn attempt : return true
                 throw $clientException;
             } else {
                 return true;
@@ -90,7 +91,7 @@ class PredisProxy extends atoum\test {
         };
         $this
             ->given($proxy = new proxy($predisClient))
-            ->and($proxy->setMaxConnectionLostAllowed(2))
+            ->and($proxy->setMaxConnectionLostAllowed(12))
             ->then
                 ->mock($predisClient)
                     ->call('set')
