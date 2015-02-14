@@ -18,7 +18,8 @@
         "predis/predis": "0.8.5"
     },
     "require-dev": {
-        "atoum/atoum": "master-dev"
+        "atoum/atoum": "master-dev",
+        "m6web/symfony2-coding-standard" : "~1.1"
     },
 	"autoload": {
         "psr-0": { "M6Web\\Component\\Redis": "src/" }
