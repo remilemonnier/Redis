@@ -211,8 +211,7 @@ abstract class Manager
             $this->compress = $params['compress'];
         }
 
-        if (isset($params['reconnect']) and is_int($params['reconnect']))
-        {
+        if (isset($params['reconnect']) and is_int($params['reconnect'])) {
             $this->reconnect = $params['reconnect'];
         }
 

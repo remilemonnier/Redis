@@ -26,13 +26,18 @@ class PredisProxy
      */
     public function __construct(Predis\Client $predis = null)
     {
-        if (is_null($predis))
-        {
+        if (is_null($predis)) {
             $predis = new Predis\Client();
         }
         $this->predis = $predis;
     }
 
+    /**
+     * call Predis\Client constructor for init
+     *
+     * @param array $params
+     * @param array $options
+     */
     public function callRedisConstructor($params = [], $options = [])
     {
         $this->predis->__construct($params, $options);

@@ -94,7 +94,8 @@ class Multi extends Manager
     /**
      * select one server
      *
-     * @param string $idServer
+     * @param string  $idServer
+     * @param boolean $strict
      *
      * @throws Exception
      * @return $this
