@@ -5,6 +5,7 @@ namespace M6Web\Component\Redis\tests\units;
 use \mageekguy\atoum;
 use \M6Web\Component\Redis\PredisProxy as proxy;
 use \M6Web\Component\Redis\Cache as redisCache;
+use Predis;
 
 class PredisProxy extends atoum\test 
 {
@@ -95,17 +96,21 @@ class PredisProxy extends atoum\test
     }
     
     /**
-     * This test need your redis config timeout to 10 sec
+     * 
      */
      public function testSimulation()
      {
          $redis = new redisCache([
-             'timeout' => 10,
+             'timeout' => 1,
              'server_config' => ['localhost' => ['ip' => 'localhost', 'port' => 6379]],
              'namespace' => 'test_proxy',
              'reconnect' => 0
          ]);
  
+        // timeout to 10 seconds
+        $predisClient = new Predis\Client();
+        $response = $predisClient->executeRaw(array('config', 'set', 'timeout', '10'));
+        
         $this->assert
             ->object($redis->set('foo', 'raoul'));
         $this->assert
