@@ -59,43 +59,6 @@ abstract class Manager
     private $compress;
 
     /**
-     * set the current db
-     * @param string $v db
-     */
-    /**
-     * @param integer $v
-     *
-     * @throws Exception
-     * @return object DB
-     */
-    public function setCurrentDb($v)
-    {
-        if (!is_int($v)) {
-            throw new Exception("please describe the db as an integer ^^");
-        }
-        if ($v == Cache::CACHE) {
-            throw new Exception("cant use ".Cache::CACHE." in class ".__CLASS__);
-        }
-        $this->currentDb = $v;
-
-        return $this;
-    }
-
-    /**
-     * get the current db
-     * @throws Exception
-     * @return string|int
-     */
-    public function getCurrentDb()
-    {
-        if (is_null($this->currentDb)) {
-            throw new Exception("currentDb cant be null");
-        }
-
-        return $this->currentDb;
-    }
-
-    /**
      * event dispatcher
      * @var Object
      */
@@ -134,6 +97,41 @@ abstract class Manager
         $this->init($params);
 
         return $this;
+    }
+        
+    /**
+     * set the current db
+     *      
+     * @param integer $v
+     *
+     * @throws Exception
+     * @return object DB
+     */
+    public function setCurrentDb($v)
+    {
+        if (!is_int($v)) {
+            throw new Exception("please describe the db as an integer ^^");
+        }
+        if ($v == Cache::CACHE) {
+            throw new Exception("cant use ".Cache::CACHE." in class ".__CLASS__);
+        }
+        $this->currentDb = $v;
+
+        return $this;
+    }
+
+    /**
+     * get the current db
+     * @throws Exception
+     * @return string|int
+     */
+    public function getCurrentDb()
+    {
+        if (is_null($this->currentDb)) {
+            throw new Exception("currentDb cant be null");
+        }
+
+        return $this->currentDb;
     }
 
     /**

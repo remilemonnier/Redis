@@ -10,8 +10,6 @@ namespace M6Web\Component\Redis;
  */
 class DB extends Manager
 {
-
-
     /**
      * constructor - db is hardcoded
      * @param array $params Manager parameters

@@ -91,9 +91,10 @@ class DB extends atoum\test
                     $redis->raouldemethode('foo');
                 })
             ->isInstanceOf('\M6Web\Component\Redis\Exception');
+                
         $this->assert
-            ->boolean($redis->set('raoul', 'v'))
-            ->isEqualTo(true);
+            ->string($redis->set('raoul', 'v')->__toString())
+            ->isEqualTo('OK');
     }
 
     public function testSetCurrentDb()
