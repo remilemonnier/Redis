@@ -113,7 +113,7 @@ class PredisProxy extends atoum\test
             ->isEqualTo('raoul')
             ;
          
-        sleep(12);
+        sleep(20);
  
         $this->assert
             ->exception(

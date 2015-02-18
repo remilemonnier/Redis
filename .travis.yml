@@ -1,7 +1,7 @@
 language: php
 
 services:
-  - redis-server
+  - redis-server --timeout 10
 
 php:
   - 5.6
