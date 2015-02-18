@@ -100,7 +100,7 @@ class PredisProxy extends atoum\test
      public function testSimulation()
      {
          $redis = new redisCache([
-             'timeout' => 1,
+             'timeout' => 10,
              'server_config' => ['localhost' => ['ip' => 'localhost', 'port' => 6379]],
              'namespace' => 'test_proxy',
              'reconnect' => 0

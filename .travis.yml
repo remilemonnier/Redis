@@ -1,7 +1,7 @@
 language: php
 
 services:
-  - redis-server redis.conf
+  - redis-server
 
 php:
   - 5.6
@@ -10,7 +10,6 @@ php:
 before_script:
   - wget http://getcomposer.org/composer.phar
   - php composer.phar install --dev
-  - echo 'timeout 10' > redis.conf
 
 script:
   - vendor/bin/atoum -d tests
