@@ -35,12 +35,12 @@ class DB extends Manager
         return parent::__construct($params);
     }
 
-
     /**
-     * return a predis object
+     *  return a predis object
+     * @param int $serverRank
      *
+     * @return false|object
      * @throws Exception
-     * @return \Redis
      */
     public function getRedisObject($serverRank = 0)
     {

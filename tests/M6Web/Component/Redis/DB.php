@@ -193,10 +193,10 @@ class DB extends atoum\test
             );
         $this->assert
             ->object($redis->getRedisObject())
-            ->isInstanceOf('Predis\Client');
+            ->isInstanceOf('M6Web\Component\Redis\PredisProxy');
         $this->assert
             ->object($redis->getRedisObject(0))
-            ->isInstanceOf('Predis\Client');
+            ->isInstanceOf('M6Web\Component\Redis\PredisProxy');
     }
 
     public function testNotifyEvent()

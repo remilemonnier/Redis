@@ -9,6 +9,7 @@
  */
 namespace M6Web\Component\Redis;
 
+use Predis;
 
 /**
  * class specialized for a cache usage
@@ -246,7 +247,7 @@ class Cache extends Manager
                 $this->notifyEvent('incrby', array($keyP, $incr), microtime(true) - $start);
 
                 return $ret;
-            } catch (\Predis\ServerException $e) {
+            } catch (Predis\ServerException $e) {
                 return null;
             }
         };
@@ -287,7 +288,7 @@ class Cache extends Manager
                 $this->notifyEvent('expire', array($keyP, $ttl), microtime(true) - $start);
 
                 return $ret;
-            } catch (\Predis\ServerException $e) {
+            } catch (Predis\ServerException $e) {
                 return null;
             }
         };
@@ -549,6 +550,7 @@ class Cache extends Manager
      * @param string $v de toute façon j'm'en fiche
      *
      * @deprecated
+     * @return object|void
      * @throws Exception
      */
     public function setCurrentDb($v)

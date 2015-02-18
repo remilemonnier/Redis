@@ -14,11 +14,11 @@
         "vendor-dir": "vendor"
     },
     "require": {
-        "php": ">=5.4.0",
+        "php": ">=5.5.0",
         "predis/predis": "0.8.5"
     },
     "require-dev": {
-        "atoum/atoum": "master-dev",
+        "atoum/atoum": "@stable",
         "m6web/symfony2-coding-standard" : "~1.1"
     },
 	"autoload": {

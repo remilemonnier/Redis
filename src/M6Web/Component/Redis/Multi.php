@@ -2,6 +2,8 @@
 
 namespace M6Web\Component\Redis;
 
+use Predis;
+
 /**
  * Class Multi
  * Allow you to send a unique command on multiple redis
@@ -92,7 +94,8 @@ class Multi extends Manager
     /**
      * select one server
      *
-     * @param string $idServer
+     * @param string  $idServer
+     * @param boolean $strict
      *
      * @throws Exception
      * @return $this
@@ -156,21 +159,21 @@ class Multi extends Manager
     /**
      * call a redis command
      *
-     * @param \Predis\Client $redis
+     * @param PredisProxy    $redis
      * @param string         $name
      * @param array          $arguments
      *
      * @throws Exception
      * @return mixed
      */
-    protected function callRedisCommand(\Predis\Client $redis, $name, $arguments)
+    protected function callRedisCommand(PredisProxy $redis, $name, $arguments)
     {
         $start = microtime(true);
         try {
             $return = call_user_func_array(array($redis, $name), $arguments);
             $this->notifyEvent($name, $arguments, microtime(true) - $start);
-        } catch (\Predis\PredisException $e) {
-            throw new Exception("Error calling the method ".$name." : ".$e->getMessage()." on redis : ".$idServer);
+        } catch (Predis\PredisException $e) {
+            throw new Exception("Error calling the method ".$name." : ".$e->getMessage());
         }
 
         return $return;
