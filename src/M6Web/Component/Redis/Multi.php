@@ -44,7 +44,7 @@ class Multi extends Manager
      * @throws Exception
      * @return $this
      */
-    public  function onOneRandomServer()
+    public function onOneRandomServer()
     {
         $keys = array_keys($this->getServerConfig());
 

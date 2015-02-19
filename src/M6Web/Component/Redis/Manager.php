@@ -101,7 +101,7 @@ abstract class Manager
         
     /**
      * set the current db
-     *      
+     *
      * @param integer $v
      *
      * @throws Exception
@@ -170,8 +170,14 @@ abstract class Manager
             throw new Exception("The EventDispatcher must be an object and implement a dispatch method");
         }
 
-        if (!class_exists($eventClass) || !method_exists($eventClass, 'setCommand') || !method_exists($eventClass, 'setArguments') || !method_exists($eventClass, 'setExecutionTime')) {
-            throw new Exception("The Event class : ".$eventClass." must implement the setCommand, setExecutionTime and the setArguments method");
+        if (!class_exists($eventClass) ||
+            !method_exists($eventClass, 'setCommand') ||
+            !method_exists($eventClass, 'setArguments') ||
+            !method_exists($eventClass, 'setExecutionTime')
+            ) {
+            $msg = "The Event class : ".$eventClass." must implement the setCommand, ";
+            $msg .= "setExecutionTime and the setArguments method";
+            throw new Exception($msg);
         }
         $this->eventDispatcher = $eventDispatcher;
         $this->eventClass      = $eventClass;
@@ -460,6 +466,4 @@ abstract class Manager
 
         return $this;
     }
-
-
 }
