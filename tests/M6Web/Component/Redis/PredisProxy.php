@@ -127,4 +127,35 @@ class PredisProxy extends atoum\test
                 })
             ->isInstanceOf('Predis\Connection\ConnectionException');
     }
+    
+    /**
+     * 
+     */
+     public function testReconnexion()
+     {
+         $redis = new redisCache([
+             'timeout' => 1,
+             'server_config' => ['localhost' => ['ip' => 'localhost', 'port' => 6379]],
+             'namespace' => 'test_proxy',
+             'reconnect' => 1
+         ]);
+ 
+        // timeout to 10 seconds
+        $predisClient = new Predis\Client();
+        $response = $predisClient->executeRaw(array('config', 'set', 'timeout', '10'));
+        
+        $this->assert->object($redis->set('foo', 'raoul'));
+        
+        $this->assert
+            ->string($redis->get('foo'))
+            ->isEqualTo('raoul')
+            ;
+         
+        sleep(20);
+ 
+        $this->assert
+            ->string($redis->get('foo'))
+            ->isEqualTo('raoul')
+            ;
+    }
 }
