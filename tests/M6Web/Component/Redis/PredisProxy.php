@@ -2,15 +2,13 @@
 
 namespace M6Web\Component\Redis\tests\units;
 
-
 use \mageekguy\atoum;
 use \M6Web\Component\Redis\PredisProxy as proxy;
+use \M6Web\Component\Redis\Cache as redisCache;
 use Predis;
 
-
-class PredisProxy extends atoum\test {
-
-
+class PredisProxy extends atoum\test 
+{
     public function testCallConstructor()
     {
         $this
@@ -32,7 +30,6 @@ class PredisProxy extends atoum\test {
     public function testCaller()
     {
         $predisClient = new \mock\Predis\Client();
-
 
         $predisClient->getMockController()->get = function() {
             return true;
@@ -96,7 +93,69 @@ class PredisProxy extends atoum\test {
                 ->mock($predisClient)
                     ->call('set')
                     ->thrice();
-
     }
-
+    
+    /**
+     * 
+     */
+     public function testSimulation()
+     {
+         $redis = new redisCache([
+             'timeout' => 1,
+             'server_config' => ['localhost' => ['ip' => 'localhost', 'port' => 6379]],
+             'namespace' => 'test_proxy',
+             'reconnect' => 0
+         ]);
+ 
+        // timeout to 10 seconds
+        $predisClient = new Predis\Client();
+        $response = $predisClient->executeRaw(array('config', 'set', 'timeout', '10'));
+        
+        $this->assert
+            ->object($redis->set('foo', 'raoul'));
+        $this->assert
+            ->string($redis->get('foo'))
+            ->isEqualTo('raoul')
+            ;
+         
+        sleep(20);
+ 
+        $this->assert
+            ->exception(
+                function() use ($redis) {
+                    $redis->get('foo');
+                })
+            ->isInstanceOf('Predis\Connection\ConnectionException');
+    }
+    
+    /**
+     * 
+     */
+     public function testReconnexion()
+     {
+         $redis = new redisCache([
+             'timeout' => 1,
+             'server_config' => ['localhost' => ['ip' => 'localhost', 'port' => 6379]],
+             'namespace' => 'test_proxy',
+             'reconnect' => 1
+         ]);
+ 
+        // timeout to 10 seconds
+        $predisClient = new Predis\Client();
+        $response = $predisClient->executeRaw(array('config', 'set', 'timeout', '10'));
+        
+        $this->assert->object($redis->set('foo', 'raoul'));
+        
+        $this->assert
+            ->string($redis->get('foo'))
+            ->isEqualTo('raoul')
+            ;
+         
+        sleep(20);
+ 
+        $this->assert
+            ->string($redis->get('foo'))
+            ->isEqualTo('raoul')
+            ;
+    }
 }

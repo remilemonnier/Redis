@@ -10,8 +10,6 @@ namespace M6Web\Component\Redis;
  */
 class DB extends Manager
 {
-
-
     /**
      * constructor - db is hardcoded
      * @param array $params Manager parameters
@@ -23,7 +21,8 @@ class DB extends Manager
         $maxNbServer = 1;
         $this->setCurrentDb(1); // default hardcoded choice for the db
         if (count($params['server_config']) > $maxNbServer) {
-            throw new Exception("cant declare more of ".$maxNbServer." servers, ".count($params['server_config'])." found ");
+            $msg = "cant declare more of ".$maxNbServer." servers, ".count($params['server_config'])." found ";
+            throw new Exception($msg);
         }
         if (isset($params['compress']) and ($params['compress'] === true)) {
             throw new Exception("cant use the compress option in this class");

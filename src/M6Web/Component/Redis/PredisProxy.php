@@ -75,7 +75,6 @@ class PredisProxy
 
         do {
             try {
-
                 return call_user_func_array(array($this->predis, $name), $arguments);
             } catch (Predis\Connection\ConnectionException $e) {
                 // try to re-connect
@@ -91,5 +90,4 @@ class PredisProxy
 
         throw $lastException;
     }
-
 }

@@ -550,7 +550,7 @@ class Cache extends atoum\test
                 function() use ($redis) {
                     $redis->incr('foo');
                 })
-            ->isInstanceOf('\M6Web\Component\Redis\Exception');
+             ->isInstanceOf('Predis\Response\ServerException');
         $redis->del('foo');
         $this->assert
             ->integer($redis->incr('chuck'))

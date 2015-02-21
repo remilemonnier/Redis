@@ -207,7 +207,7 @@ class Cache extends Manager
     public function type($key)
     {
         $start = microtime(true);
-        $ret = $this->getRedis($key)->type($this->getPatternKey().$key);
+        $ret = (string)$this->getRedis($key)->type($this->getPatternKey().$key);
         $this->notifyEvent('type', array($this->getPatternKey().$key), microtime(true) - $start);
 
         return $ret;

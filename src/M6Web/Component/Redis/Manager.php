@@ -59,43 +59,6 @@ abstract class Manager
     private $compress;
 
     /**
-     * set the current db
-     * @param string $v db
-     */
-    /**
-     * @param integer $v
-     *
-     * @throws Exception
-     * @return object DB
-     */
-    public function setCurrentDb($v)
-    {
-        if (!is_int($v)) {
-            throw new Exception("please describe the db as an integer ^^");
-        }
-        if ($v == Cache::CACHE) {
-            throw new Exception("cant use ".Cache::CACHE." in class ".__CLASS__);
-        }
-        $this->currentDb = $v;
-
-        return $this;
-    }
-
-    /**
-     * get the current db
-     * @throws Exception
-     * @return string|int
-     */
-    public function getCurrentDb()
-    {
-        if (is_null($this->currentDb)) {
-            throw new Exception("currentDb cant be null");
-        }
-
-        return $this->currentDb;
-    }
-
-    /**
      * event dispatcher
      * @var Object
      */
@@ -135,6 +98,41 @@ abstract class Manager
 
         return $this;
     }
+        
+    /**
+     * set the current db
+     *
+     * @param integer $v
+     *
+     * @throws Exception
+     * @return object DB
+     */
+    public function setCurrentDb($v)
+    {
+        if (!is_int($v)) {
+            throw new Exception("please describe the db as an integer ^^");
+        }
+        if ($v == Cache::CACHE) {
+            throw new Exception("cant use ".Cache::CACHE." in class ".__CLASS__);
+        }
+        $this->currentDb = $v;
+
+        return $this;
+    }
+
+    /**
+     * get the current db
+     * @throws Exception
+     * @return string|int
+     */
+    public function getCurrentDb()
+    {
+        if (is_null($this->currentDb)) {
+            throw new Exception("currentDb cant be null");
+        }
+
+        return $this->currentDb;
+    }
 
     /**
      * Notify an event to the event dispatcher
@@ -172,8 +170,14 @@ abstract class Manager
             throw new Exception("The EventDispatcher must be an object and implement a dispatch method");
         }
 
-        if (!class_exists($eventClass) || !method_exists($eventClass, 'setCommand') || !method_exists($eventClass, 'setArguments') || !method_exists($eventClass, 'setExecutionTime')) {
-            throw new Exception("The Event class : ".$eventClass." must implement the setCommand, setExecutionTime and the setArguments method");
+        if (!class_exists($eventClass) ||
+            !method_exists($eventClass, 'setCommand') ||
+            !method_exists($eventClass, 'setArguments') ||
+            !method_exists($eventClass, 'setExecutionTime')
+            ) {
+            $msg = "The Event class : ".$eventClass." must implement the setCommand, ";
+            $msg .= "setExecutionTime and the setArguments method";
+            throw new Exception($msg);
         }
         $this->eventDispatcher = $eventDispatcher;
         $this->eventClass      = $eventClass;
@@ -462,6 +466,4 @@ abstract class Manager
 
         return $this;
     }
-
-
 }
