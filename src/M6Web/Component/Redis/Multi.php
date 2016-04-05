@@ -123,6 +123,21 @@ class Multi extends Manager
         return $this;
     }
 
+    /**
+     * select one server according to the key
+     *
+     * @param string $key cache key
+     *
+     * @return $this
+     * @throws Exception when no redis server available
+     */
+    public function onOneKeyServer($key)
+    {
+        $this->selectedRedis[] = $this->getRedis($key);
+        $this->multiRedis = false;
+
+        return $this;
+    }
 
     /**
      * magic method to the \Redis() proxy
