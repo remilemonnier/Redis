@@ -144,6 +144,40 @@ class Multi extends atoum\test
                     ->hasMessage("cant connect to redis phpraoul");
     }
 
+    public function testOneKeyServerWorking()
+    {
+        $server_config = $this->getServerConfig('many');
+        $key = self::spacename.'foo';
+        $this->assert
+            ->if($redis = new redis\Multi([
+                'timeout' => 0.1,
+                'server_config' => $server_config
+            ]))
+            ->then($redis->onOneKeyServer($key)->set($key, 'bar'))
+                ->string($redis->onOneKeyServer($key)->get($key))
+                    ->isEqualTo('bar');
+    }
+
+    public function testNoKeyServerAvailable()
+    {
+        $server_config = $this->getServerConfig('unavailable');
+
+        $this->assert
+            ->if($redis = new redis\Multi([
+                'timeout' => 0.1,
+                'server_config' => $server_config
+            ]))
+            ->then
+            ->exception(
+                function() use ($redis) {
+                    $key = self::spacename.'foo';
+                    $redis->onOneKeyServer($key)->get($key);
+                }
+            )
+            ->isInstanceOf('\M6Web\Component\Redis\Exception')
+            ->hasMessage("No redis server available ! ");
+    }
+
     public function testManyWrong()
     {
         $server_config = $this->getServerConfig('manywrong');
