@@ -194,7 +194,7 @@ class Cache extends Manager
         $ret = $this->getRedis($key)->exists($this->getPatternKey().$key);
         $this->notifyEvent('exists', array($this->getPatternKey().$key), microtime(true) - $start);
 
-        return $ret;
+        return (boolean) $ret;
     }
 
     /**
