@@ -220,6 +220,27 @@ class DB extends atoum\test
         ;
     }
 
+    public function testNotifyEventCustom()
+    {
+        $server_config = $this->getServerConfig('one');
+        $r = new redis\DB(array(
+            'timeout' => 0.1,
+            'server_config' => $server_config,
+            'event_name' => 'myEvent'
+        ));
+        $dispatcher = new \mock\M6Web\Component\Redis\tests\fake\DispatcherTest();
+        $dispatcher->getMockController()->dispatch = function() { return true; };
+        $this->if($r->setEventDispatcher($dispatcher, '\M6Web\Component\Redis\tests\fake\EventTest'))
+            ->then
+            ->variable($r->get('raoul'))
+            ->mock($dispatcher)
+            ->call('dispatch')
+            ->witharguments('myEvent')
+            ->once()
+
+        ;
+    }
+
     /**
      * dernière méthode a être appelée
      * nettoyage global
