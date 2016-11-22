@@ -77,6 +77,12 @@ abstract class Manager
     protected $reconnect = 0;
 
     /**
+     * name of the event
+     * @var string
+     */
+    protected $eventName = 'redis.command';
+
+    /**
      * constructor
      * $params = array(
      * 'timeout' => 2,
@@ -150,7 +156,7 @@ abstract class Manager
             $event->setCommand($command);
             $event->setExecutionTime($time);
             $event->setArguments($arguments);
-            $this->eventDispatcher->dispatch('redis.command', $event);
+            $this->eventDispatcher->dispatch($this->eventName, $event);
         }
 
         return $this;
@@ -217,6 +223,10 @@ abstract class Manager
 
         if (isset($params['reconnect']) and is_int($params['reconnect'])) {
             $this->reconnect = $params['reconnect'];
+        }
+
+        if (isset($params['event_name'])) {
+            $this->eventName = (string) $params['event_name'];
         }
 
         return $this;
