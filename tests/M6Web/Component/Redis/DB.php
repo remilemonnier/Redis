@@ -270,15 +270,15 @@ class DB extends atoum\test
         $this->array($redis->hkeys($cacheKey))->IsIdenticalTo(array('title', 'lastUpdate'));
 
         //Est ce que une clé particuliere existe
-        $this->boolean($redis->hexists($cacheKey, 'title'))->isIdenticalTo(true);
-        $this->boolean($redis->hexists($cacheKey, 'titleee'))->isIdenticalTo(false);
+        $this->integer($redis->hexists($cacheKey, 'title'))->isIdenticalTo(1);
+        $this->integer($redis->hexists($cacheKey, 'titleee'))->isIdenticalTo(0);
 
         //Suppression d'un clé du tableau
         $redis->hdel($cacheKey, 'title');
 
         //La clé a-t-elle bien été supprimé
-        $this->boolean($redis->hexists($cacheKey, 'title'))->isIdenticalTo(false);
-        $this->boolean($redis->hexists($cacheKey, 'lastUpdate'))->isIdenticalTo(true);
+        $this->integer($redis->hexists($cacheKey, 'title'))->isIdenticalTo(0);
+        $this->integer($redis->hexists($cacheKey, 'lastUpdate'))->isIdenticalTo(1);
         $this->integer(count($redis->hgetall($cacheKey)))->isIdenticalTo(1);
 
         $redis->hkeys($cacheKey);
