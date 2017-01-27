@@ -463,8 +463,7 @@ class Cache extends atoum\test
                 ->set('toto2', 'new_bar2')
                 ->exec());
         $this->assert
-            ->boolean($redis->exists('toto3'))
-            ->isEqualTo(false)
+            ->isFalse($redis->exists('toto3'))
             ->string($redis->get('toto2'))
             ->isEqualTo('new_bar2');
         $redis->set('toto3', 'new_bar3');
@@ -475,12 +474,9 @@ class Cache extends atoum\test
                 ->del('toto3')
                 ->exec()
             )
-            ->boolean($redis->exists('toto'))
-            ->isEqualTo(false)
-            ->boolean($redis->exists('toto2'))
-            ->isEqualTo(false)
-            ->boolean($redis->exists('toto3'))
-            ->isEqualTo(false);
+            ->isFalse($redis->exists('toto'))
+            ->isFalse($redis->exists('toto2'))
+            ->isFalse($redis->exists('toto3'));
 
     }
 
@@ -499,10 +495,8 @@ class Cache extends atoum\test
             ));
         $redis->set('foo', 'bar');
         $this->assert
-            ->boolean($redis->exists('uneclequinexistepasetsielleexisteLOL'))
-            ->isEqualTo(false)
-            ->boolean($redis->exists('foo'))
-            ->isEqualTo(true);
+            ->isFalse($redis->exists('uneclequinexistepasetsielleexisteLOL'))
+            ->isTrue($redis->exists('foo'));
     }
 
     /**
